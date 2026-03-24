@@ -1,0 +1,162 @@
+/* =========================================
+   🎨 COLOR SCHEME & CSS VARIABLES
+   ========================================= */
+:root {
+    --primary-blue: #0d6efd;
+    --primary-blue-hover: #0b5ed7;
+    --light-bg: #f8f9fa;
+    --card-bg: #ffffff;
+    --border-accent: #dee2e6;
+    --muted-text: #6c757d;
+    --input-border: #ced4da;
+    --dark-text: #212529;
+    --danger-msg: #dc3545;
+    --cyan-accent: #0dcaf0;
+    --success-msg: #198754;
+    --middle-bg: #f4f5f7; 
+}
+
+/* =========================================
+   📐 RESET & BASE STYLES
+   ========================================= */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+    background-color: var(--light-bg);
+    background-image: 
+        repeating-linear-gradient(45deg, rgba(233, 236, 239, 0.5), rgba(233, 236, 239, 0.5) 1px, transparent 1px, transparent 15px),
+        repeating-linear-gradient(-45deg, rgba(233, 236, 239, 0.5), rgba(233, 236, 239, 0.5) 1px, transparent 1px, transparent 15px);
+    color: var(--dark-text);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* =========================================
+   🖥️ LAYOUT: NAVBAR & FOOTER
+   ========================================= */
+header {
+    background: linear-gradient(to right, var(--primary-blue), var(--cyan-accent));
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.logo-img { height: 40px; width: 40px; border-radius: 50%; margin-right: 15px; background-color: white; }
+.header-text { display: flex; flex-direction: row; align-items: baseline; gap: 8px; }
+.header-title { color: white; font-weight: bold; font-size: 26px; font-family: "Times New Roman", Times, serif; letter-spacing: 0.5px; }
+.header-subtitle { color: rgba(255, 255, 255, 0.9); font-size: 14px; font-weight: 500; }
+footer { background: linear-gradient(to right, var(--primary-blue), var(--cyan-accent)); color: white; text-align: center; padding: 12px; font-size: 12px; position: fixed; bottom: 0; width: 100%; z-index: 1000; }
+
+/* =========================================
+   💳 LOGIN CARD UI
+   ========================================= */
+main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 80px 16px; }
+
+.login-card {
+    background: var(--card-bg); width: 100%; max-width: 450px; padding: 0; 
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12), 0 5px 15px rgba(0, 0, 0, 0.08); 
+    border-radius: 12px; overflow: hidden; 
+    border-top: 4px solid var(--primary-blue);
+    transform: perspective(1000px) rotateX(1deg); transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-card:hover { transform: perspective(1000px) rotateX(1deg) translateY(-4px); box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15), 0 8px 20px rgba(0, 0, 0, 0.1); }
+
+.card-header { background-color: var(--middle-bg); display: flex; flex-direction: column; align-items: center; padding: 32px 32px 24px 32px; }
+.form-middle { background-color: var(--card-bg); padding: 24px 32px; border-top: 1px solid var(--border-accent); border-bottom: 1px solid var(--border-accent); }
+.form-bottom { background-color: var(--middle-bg); padding: 20px 32px 28px 32px; }
+
+/* =========================================
+   🏷️ BRANDING & TEXT
+   ========================================= */
+.brand-container { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px; }
+.brand-logo { height: 40px; width: auto; }
+.brand-box { border: 2px solid var(--primary-blue); border-radius: 30px; padding: 4px 16px; font-size: 18px; font-weight: 700; letter-spacing: 0.5px; background-color: transparent; }
+.brand-vit, .brand-collab { color: var(--primary-blue); }
+.sign-in-text { color: var(--muted-text); font-size: 18px; font-weight: 500; margin: 0; }
+
+/* =========================================
+   🎯 LOGIN TABS (NEW)
+   ========================================= */
+.login-tabs {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--border-accent);
+}
+
+.tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 8px 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted-text);
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.tab-btn:hover { color: var(--primary-blue-hover); }
+
+/* Active State indicator (Blue underline) */
+.tab-btn.active { color: var(--primary-blue); }
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; /* Pulls it down over the gray border */
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: var(--primary-blue);
+    border-radius: 3px 3px 0 0;
+}
+
+/* =========================================
+   📝 FORM INPUTS & BUTTONS
+   ========================================= */
+.input-group { position: relative; margin-bottom: 16px; }
+.input-field { width: 100%; min-height: 40px; padding: 10px 40px 10px 12px; border: 1px solid var(--input-border); border-radius: 4px; font-size: 14px; font-weight: 500; color: var(--dark-text); transition: border-color 0.3s ease; background-color: white; }
+.input-field::placeholder { color: var(--muted-text); font-weight: 400; }
+.input-field:focus { border-color: var(--primary-blue); outline: none; }
+.input-icon { position: absolute; right: 0; top: 0; width: 40px; height: 100%; padding: 10px; background-color: #f1f1f1; border-left: 1px solid var(--input-border); border-radius: 0 4px 4px 0; cursor: pointer; }
+.user-icon { fill: var(--primary-blue); cursor: default; }
+.eye-icon { fill: var(--danger-msg); transition: fill 0.3s ease; }
+
+.submit-container { display: flex; justify-content: flex-end; margin-top: 10px; }
+.btn { min-height: 36px; padding: 0 24px; border: none; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background-color 0.3s ease; }
+.btn-primary { background-color: var(--primary-blue); color: white; }
+.btn-primary:hover { background-color: var(--primary-blue-hover); }
+
+/* =========================================
+   🔗 LINKS & MESSAGES
+   ========================================= */
+.links-container { display: flex; justify-content: space-between; font-size: 12px; font-weight: 500; }
+.auth-links a { color: var(--primary-blue); text-decoration: none; display: block; margin-bottom: 4px; }
+.auth-links a:hover { text-decoration: underline; }
+.home-link { color: #198754; text-decoration: none; font-style: italic; align-self: flex-end; }
+.home-link:hover { text-decoration: underline; }
+.message-box { font-size: 13px; font-weight: 500; text-align: center; margin-top: 15px; min-height: 10px; }
+.error-text { color: var(--danger-msg); }
+.success-text { color: var(--success-msg); }
+
+/* =========================================
+   📱 RESPONSIVENESS
+   ========================================= */
+@media (max-width: 480px) {
+    .header-title { font-size: 20px; } .header-subtitle { font-size: 11px; }
+    .card-header { padding: 24px 20px 20px 20px; } .form-middle { padding: 20px 20px; } .form-bottom { padding: 16px 20px 24px 20px; }
+    .brand-box { font-size: 16px; padding: 4px 12px; } .brand-logo { height: 35px; } .brand-container { gap: 8px; margin-bottom: 16px; } .sign-in-text { font-size: 16px; }
+}
