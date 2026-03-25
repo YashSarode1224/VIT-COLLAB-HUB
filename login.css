@@ -81,7 +81,7 @@ main { flex: 1; display: flex; align-items: center; justify-content: center; pad
    🏷️ BRANDING & TEXT
    ========================================= */
 .brand-container { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px; }
-.brand-logo { height: 40px; width: auto; }
+.brand-logo { height: 40px; width: 40px; border-radius: 50%; object-fit: cover; }
 .brand-box { border: 2px solid var(--primary-blue); border-radius: 30px; padding: 4px 16px; font-size: 18px; font-weight: 700; letter-spacing: 0.5px; background-color: transparent; }
 .brand-vit, .brand-collab { color: var(--primary-blue); }
 .sign-in-text { color: var(--muted-text); font-size: 18px; font-weight: 500; margin: 0; }
