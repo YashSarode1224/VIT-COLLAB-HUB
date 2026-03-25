@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIT COLLAB HUB - Hackathon Workspace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/workspace.css">
+</head>
+<body style="padding-top: 60px;"> <!-- Override the 130px dual-nav spacing -->
+    <header class="top-navbar">
+        <a href="/html/club-dashboard.html" class="nav-brand">
+            <img src="/images/logo.jpeg" alt="VIT Logo" class="nav-logo">
+            <span class="nav-title">VIT Collab Hub</span>
+        </a>
+        <div class="nav-actions">
+            <!-- Navigate strictly back to dashboard -->
+            <button class="btn-logout" onclick="window.location.href='/html/club-dashboard.html'">Back to Dashboard</button>
+        </div>
+    </header>
+
+    <div class="workspace-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <h4 style="margin-bottom: 10px; margin-top: 10px; color: var(--muted-text); font-size: 12px; text-transform: uppercase;">Workspace Manage</h4>
+            <div id="tab-applications" class="sidebar-link active">
+                <span class="nav-icon bg-indigo"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span>
+                <span>Team Applications</span>
+            </div>
+            <div id="tab-rounds" class="sidebar-link">
+                <span class="nav-icon" style="background-color: #0dcaf0; color: #005a6e;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></span>
+                <span>Manage Rounds</span>
+            </div>
+            <div id="tab-winners" class="sidebar-link">
+                <span class="nav-icon" style="background-color: #ffd43b; color: #b35100;"><svg viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0011 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 003.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM7 10.82C5.84 10.4 5 9.3 5 8V7h2v3.82zM19 8c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg></span>
+                <span>Declare Winners</span>
+            </div>
+            <div id="tab-announcements" class="sidebar-link">
+                <span class="nav-icon" style="background-color: #e0b0ff; color: #5b0086;"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg></span>
+                <span>Announcements</span>
+            </div>
+            <div id="tab-settings" class="sidebar-link">
+                <span class="nav-icon bg-orange"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.73 8.87c-.11.2-.06.47.12.61l2.03 1.58c-.04.3-.06.62-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .43-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.49-.12-.61l-2.03-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></span>
+                <span>Hackathon Settings</span>
+            </div>
+        </aside>
+
+        <!-- Applications View -->
+        <main class="workspace-content" id="view-applications">
+            <h2 style="color: var(--primary-blue); margin-bottom: 20px;" id="hackathon-title">Loading Workspace...</h2>
+            
+            <div class="card">
+                <h3 style="margin-bottom: 15px; border-bottom: 1px solid var(--border-accent); padding-bottom: 10px;">Pending Team Applications</h3>
+                
+                <div id="applications-list" style="display: flex; flex-direction: column; gap: 15px;">
+                    <p style="color: var(--muted-text); font-size: 14px;">Loading applications...</p>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Rounds View -->
+        <main class="workspace-content" id="view-rounds" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="color: var(--primary-blue);" id="round-title">Loading Round Info...</h2>
+                <div id="round-status-badge" style="background: var(--light-cyan); color: var(--primary-blue); padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 14px;">Round 1</div>
+            </div>
+            
+            <div class="card">
+                <h3 style="margin-bottom: 10px;">Select Teams to Advance</h3>
+                <p style="color: var(--muted-text); font-size: 14px; margin-bottom: 20px;">Check the boxes for the approved teams you want to promote to the next round based on their evaluation.</p>
+                
+                <div id="teams-round-list" style="display: flex; flex-direction: column; gap: 10px;">
+                    <p style="color: var(--muted-text); font-size: 14px;">Loading teams...</p>
+                </div>
+
+                <div id="round-controls" style="margin-top: 25px;">
+                    <button id="advance-round-btn" class="btn-submit" style="background-color: var(--primary-blue);">Advance Selected Teams to Next Round</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Winners View -->
+        <main class="workspace-content" id="view-winners" style="display: none;">
+            <h2 style="color: var(--primary-blue); margin-bottom: 20px;">Declare Winners</h2>
+            <div class="card">
+                <h3 style="margin-bottom: 15px; border-bottom: 1px solid var(--border-accent); padding-bottom: 10px;">Announce Results</h3>
+                <p style="color: var(--muted-text); font-size: 14px; margin-bottom: 15px;">If the hackathon is over, you can explicitly declare the winning team here. If no one participated, you can record it accordingly.</p>
+                
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label class="form-label" style="color: #b8860b;">🥇 1st Place Team</label>
+                    <select id="winner-1" class="form-input">
+                        <option value="">Loading teams...</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label class="form-label" style="color: #7b7b7b;">🥈 2nd Place Team</label>
+                    <select id="winner-2" class="form-input">
+                        <option value="">Loading teams...</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <label class="form-label" style="color: #a0522d;">🥉 3rd Place Team</label>
+                    <select id="winner-3" class="form-input">
+                        <option value="">Loading teams...</option>
+                    </select>
+                </div>
+                
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <button id="save-winner-btn" class="btn-submit" style="background-color: var(--success-msg); padding: 10px 24px; border-radius: 6px;">Publish Winners</button>
+                    <button id="no-winner-btn" style="background-color: transparent; border: 1px solid var(--danger-msg); color: var(--danger-msg); padding: 10px 24px; border-radius: 6px; cursor: pointer; font-weight: 500;">Mark as No Participants</button>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Announcements View -->
+        <main class="workspace-content" id="view-announcements" style="display: none;">
+            <h2 style="color: var(--primary-blue); margin-bottom: 20px;">Speaker System</h2>
+            
+            <div class="card" style="margin-bottom: 20px;">
+                <h3 style="margin-bottom: 15px; border-bottom: 1px solid var(--border-accent); padding-bottom: 10px;">Post a New Announcement</h3>
+                <div class="form-group">
+                    <textarea id="announcement-input" class="form-input" rows="3" placeholder="Type your broadcast message to all students and participants here..." style="resize: vertical;"></textarea>
+                </div>
+                <button id="post-announcement-btn" class="btn-submit" style="background-color: var(--primary-blue);">Broadcast Announcement</button>
+            </div>
+            
+            <div class="card">
+                <h3 style="margin-bottom: 15px;">Broadcast History</h3>
+                <div id="announcement-list" style="display: flex; flex-direction: column; gap: 15px;">
+                    <p style="color: var(--muted-text); font-size: 14px;">Loading messages...</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Settings View (Placeholder) -->
+        <main class="workspace-content" id="view-settings" style="display: none;">
+            <h2 style="color: var(--primary-blue); margin-bottom: 20px;">Hackathon Options</h2>
+            <div class="card">
+                <h3 style="margin-bottom: 15px;">Danger Zone</h3>
+                <p style="color: var(--muted-text); margin-bottom: 15px;">Once a hackathon is deleted, it sweeps all linked sub-collections and files via JavaScript constraints to prevent database ballooning.</p>
+                <button id="delete-hackathon-btn" class="btn-submit" style="background-color: var(--danger-msg);">Delete Hackathon</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Inject Workspace Logic -->
+    <script type="module" src="/js/hackathon-workspace.js"></script>
+</body>
+</html>

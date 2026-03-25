@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIT COLLAB HUB - Club Profile Setup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/global.css">
+    <style>
+        .setup-container {
+            max-width: 500px;
+            margin: 60px auto;
+        }
+    </style>
+</head>
+<body>
+    <header class="top-navbar">
+        <div class="nav-brand">
+            <img src="/images/logo.jpeg" alt="VIT Logo" class="nav-logo">
+            <span class="nav-title">VIT Collab Hub</span>
+        </div>
+        <div class="nav-actions">
+            <button id="logout-btn" class="btn-logout">Logout</button>
+        </div>
+    </header>
+
+    <main class="main-container setup-container">
+        <div class="card">
+            <h2 style="margin-bottom: 5px; color: var(--primary-blue);">Complete Club Profile</h2>
+            <p style="margin-bottom: 25px; font-size: 14px; color: var(--muted-text);">Before accessing your dashboard, please complete your Club Executive profile.</p>
+            
+            <form id="profile-setup-form">
+                <div class="form-group">
+                    <label class="form-label" for="club-name">Club/Chapter Name</label>
+                    <input type="text" id="club-name" class="form-input" readonly style="background-color: #e9ecef; cursor: not-allowed; font-weight: 600; color: var(--primary-blue);" value="Loading...">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="executive-name">Executive Name</label>
+                    <input type="text" id="executive-name" class="form-input" placeholder="Your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="position">Position in Club</label>
+                    <input type="text" id="position" class="form-input" placeholder="e.g. Technical Head" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="branch">Your Branch</label>
+                    <input type="text" id="branch" class="form-input" placeholder="e.g. B.Tech CSE" required>
+                </div>
+
+                <button type="submit" id="save-profile-btn" class="btn-submit" style="width: 100%;">Save Profile & Continue</button>
+            </form>
+        </div>
+    </main>
+
+    <script type="module" src="/js/club-profile-setup.js"></script>
+</body>
+</html>
