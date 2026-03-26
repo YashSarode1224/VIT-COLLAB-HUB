@@ -3,8 +3,11 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebas
 import {
     getAuth,
     signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    onAuthStateChanged,
     sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 // Your live web app's Firebase configuration
 const firebaseConfig = {
@@ -19,6 +22,25 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Auth Guard: If user is already logged in, redirect to their dashboard
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        try {
+            const docRef = doc(db, "users", user.uid);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists() && docSnap.data().role) {
+                const role = docSnap.data().role;
+                if (role === 'admin') window.location.href = '/html/admin-dashboard.html';
+                else if (role === 'club') window.location.href = '/html/club-dashboard.html';
+                else if (role === 'student') window.location.href = '/html/student-dashboard.html';
+            }
+        } catch (err) {
+            console.error("Auth Guard Error:", err);
+        }
+    }
+});
 
 // DOM Elements
 const loginForm = document.getElementById('login-form');
@@ -116,17 +138,32 @@ loginForm.addEventListener('submit', async (e) => {
         window.location.href = redirectUrl; // Redirect to the correct dashboard!
     } catch (error) {
         console.error(error.code);
-        let errorMessage = "An error occurred during login.";
-        if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-            errorMessage = "Invalid credentials. Please try again.";
-        } else if (error.code === 'auth/invalid-email') {
-            errorMessage = "Please enter a valid format.";
-        } else if (error.code === 'auth/too-many-requests') {
-            errorMessage = "Too many attempts. Please try again later.";
+        
+        // --- AUTO-REGISTRATION for PROTOTYPING ---
+        // If user doesn't exist, we will create the account automatically 
+        // to "connect" the login to the admin/club/student flows seamlessly.
+        if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found') {
+            try {
+                const userCred = await createUserWithEmailAndPassword(auth, firebaseEmailFormat, password);
+                console.log("Auto-registered dummy user:", userCred.user.uid);
+                window.location.href = redirectUrl;
+            } catch (regError) {
+                console.error("Auto-registration failed:", regError.code);
+                showMessage("Invalid credentials. Registration also failed.", true);
+                submitBtn.textContent = "Sign In";
+                submitBtn.disabled = false;
+            }
+        } else {
+            let errorMessage = "An error occurred during login.";
+            if (error.code === 'auth/invalid-email') {
+                errorMessage = "Please enter a valid format.";
+            } else if (error.code === 'auth/too-many-requests') {
+                errorMessage = "Too many attempts. Please try again later.";
+            }
+            showMessage(errorMessage, true);
+            submitBtn.textContent = "Sign In";
+            submitBtn.disabled = false;
         }
-        showMessage(errorMessage, true);
-        submitBtn.textContent = "Sign In";
-        submitBtn.disabled = false;
     }
 });
 
