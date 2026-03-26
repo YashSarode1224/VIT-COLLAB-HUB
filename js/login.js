@@ -138,32 +138,20 @@ loginForm.addEventListener('submit', async (e) => {
         window.location.href = redirectUrl; // Redirect to the correct dashboard!
     } catch (error) {
         console.error(error.code);
-        
-        // --- AUTO-REGISTRATION for PROTOTYPING ---
-        // If user doesn't exist, we will create the account automatically 
-        // to "connect" the login to the admin/club/student flows seamlessly.
+
+        let errorMessage = "An error occurred during login.";
         if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found') {
-            try {
-                const userCred = await createUserWithEmailAndPassword(auth, firebaseEmailFormat, password);
-                console.log("Auto-registered dummy user:", userCred.user.uid);
-                window.location.href = redirectUrl;
-            } catch (regError) {
-                console.error("Auto-registration failed:", regError.code);
-                showMessage("Invalid credentials. Registration also failed.", true);
-                submitBtn.textContent = "Sign In";
-                submitBtn.disabled = false;
-            }
-        } else {
-            let errorMessage = "An error occurred during login.";
-            if (error.code === 'auth/invalid-email') {
-                errorMessage = "Please enter a valid format.";
-            } else if (error.code === 'auth/too-many-requests') {
-                errorMessage = "Too many attempts. Please try again later.";
-            }
-            showMessage(errorMessage, true);
-            submitBtn.textContent = "Sign In";
-            submitBtn.disabled = false;
+            errorMessage = "Account not found. Please contact your administrator to get registered.";
+        } else if (error.code === 'auth/wrong-password') {
+            errorMessage = "Incorrect password. Please try again.";
+        } else if (error.code === 'auth/invalid-email') {
+            errorMessage = "Please enter a valid ID format.";
+        } else if (error.code === 'auth/too-many-requests') {
+            errorMessage = "Too many failed attempts. Please try again later.";
         }
+        showMessage(errorMessage, true);
+        submitBtn.textContent = "Sign In";
+        submitBtn.disabled = false;
     }
 });
 
