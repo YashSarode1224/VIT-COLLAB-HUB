@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIT COLLAB HUB - Admin Profile Setup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/login.css">
+    <style>
+        .btn-logout {
+            background-color: #e53935;
+            color: white;
+            border: none;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-logout:hover {
+            background-color: #c62828;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(229, 57, 53, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header style="justify-content: space-between;">
+        <div style="display: flex; align-items: center;">
+            <img src="/images/logo.jpeg" alt="VIT Logo" class="logo-img">
+            <div class="header-text">
+                <span class="header-title">VIT</span>
+                <span class="header-subtitle">(Vellore Campus)</span>
+            </div>
+        </div>
+        <button id="logout-btn" class="btn-logout">Logout</button>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <div class="login-card">
+            
+            <!-- TOP SECTION -->
+            <div class="card-header">
+                <div class="brand-container">
+                    <img src="/images/logo.jpeg" alt="VIT Logo" class="brand-logo">
+                    <div class="brand-box">
+                        <span class="brand-vit">VIT</span> <span class="brand-collab">Collab Hub</span>
+                    </div>
+                </div>
+                <h2 class="sign-in-text">Complete Admin Profile</h2>
+            </div>
+
+            <form id="profile-setup-form">
+                
+                <!-- MIDDLE SECTION -->
+                <div class="form-middle">
+                    
+                    <p style="text-align: center; font-size: 13px; color: var(--muted-text); margin-bottom: 20px;">
+                        Please provide your faculty details to complete registration.
+                    </p>
+
+                    <div class="input-group">
+                        <label style="font-size: 13px; font-weight: 500; color: var(--dark-text); margin-bottom: 4px; display: block;">Employee ID</label>
+                        <input type="text" id="employee-id" class="input-field" placeholder="Enter your Employee ID" required>
+                    </div>
+
+                    <!-- Full Name Input -->
+                    <div class="input-group">
+                        <label style="font-size: 13px; font-weight: 500; color: var(--dark-text); margin-bottom: 4px; display: block;">Faculty Name</label>
+                        <input type="text" id="admin-name" class="input-field" placeholder="Full Name" required>
+                    </div>
+
+                    <!-- Contact Email Input -->
+                    <div class="input-group">
+                        <label style="font-size: 13px; font-weight: 500; color: var(--dark-text); margin-bottom: 4px; display: block;">Contact Email</label>
+                        <input type="email" id="admin-email" class="input-field" placeholder="example@vit.ac.in" required>
+                        <span id="email-error" style="font-size: 12px; color: #e53935; font-weight: 500; margin-top: 4px; display: none;">Invalid Email Id format !!!</span>
+                    </div>
+
+                    <!-- School Name Input -->
+                    <div class="input-group">
+                        <label style="font-size: 13px; font-weight: 500; color: var(--dark-text); margin-bottom: 4px; display: block;">School / Department</label>
+                        <input type="text" id="school-name" class="input-field" placeholder="e.g. SCOPE, SENSE" required>
+                    </div>
+
+                    <div class="submit-container">
+                        <button type="submit" id="save-profile-btn" class="btn btn-primary" style="width: 100%;">Save & Continue</button>
+                    </div>
+
+                    <!-- Feedback Messages -->
+                    <div id="profile-message" class="message-box"></div>
+                </div>
+
+            </form>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        Copyright &copy; 2026 Software Development Cell, VIT COLLAB HUB, Vellore-632 014.
+    </footer>
+
+    <!-- Firebase Logic -->
+    <script type="module" src="/js/admin-profile-setup.js"></script>
+</body>
+</html>
