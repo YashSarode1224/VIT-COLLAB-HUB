@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIT COLLAB HUB - Club Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+    <header class="top-navbar">
+        <a href="club-dashboard.html" class="nav-brand" style="text-decoration: none;">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c5/Vellore_Institute_of_Technology_seal_2017.svg/1200px-Vellore_Institute_of_Technology_seal_2017.svg.png" 
+                alt="VIT Logo" class="nav-logo" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; background: white; padding: 2px;">
+            <span class="nav-title">VIT COLLAB HUB</span>
+        </a>
+        <!-- Center Role Indicator -->
+        <div style="position: absolute; left: 50%; transform: translateX(-50%);">
+            <span style="color: white; font-weight: 600; font-size: 15px; letter-spacing: 0.5px;">Club Portal</span>
+        </div>
+        <div class="nav-actions" style="display: flex; align-items: center; gap: 15px;">
+            <span id="nav-user-name" class="nav-profile-identifier" style="color: white; font-weight: 500; font-size: 0.9rem;">Loading...</span>
+            <button id="logout-btn" class="btn-logout">Logout</button>
+        </div>
+    </header>
+
+    <!-- Sub Navbar (Academics Style) -->
+    <div class="sub-navbar">
+        <div id="tab-dashboard" class="sub-nav-link active">
+            <span class="icon-btn btn-blue nav-icon">
+                <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+            </span>
+            <span>Dashboard</span>
+        </div>
+        <div id="tab-profile" class="sub-nav-link">
+            <span class="icon-btn btn-indigo nav-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </span>
+            <span>Profile Info</span>
+        </div>
+        <div id="tab-settings" class="sub-nav-link">
+            <span class="icon-btn btn-orange nav-icon">
+                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.73 8.87c-.11.2-.06.47.12.61l2.03 1.58c-.04.3-.06.62-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .43-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.49-.12-.61l-2.03-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+            </span>
+            <span>Settings</span>
+        </div>
+        <div id="tab-winners" class="sub-nav-link">
+            <span class="icon-btn nav-icon" style="background-color: #ffd43b; color: #b35100;">
+                <svg viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0011 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 003.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM7 10.82C5.84 10.4 5 9.3 5 8V7h2v3.82zM19 8c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
+            </span>
+            <span>Past Winners</span>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD VIEW -->
+    <main id="view-dashboard" class="main-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Club Dashboard</h1>
+            <button id="create-hackathon-btn" class="btn-submit">+ Create Hackathon</button>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Left Column: Active Hackathons -->
+            <div class="card">
+                <h3 style="margin-bottom: 15px; border-bottom: 1px solid var(--border-accent); padding-bottom: 10px;">Your Hackathons</h3>
+                <div id="hackathons-list" class="item-list">
+                    <p style="color: var(--muted-text); font-size: 14px;">Loading hackathons...</p>
+                </div>
+            </div>
+
+            <!-- Right Column: Quick Stats / Info -->
+            <div class="card">
+                <h3 style="margin-bottom: 15px; border-bottom: 1px solid var(--border-accent); padding-bottom: 10px;">Club Stats</h3>
+                <div style="margin-bottom: 15px;">
+                    <p style="font-size: 24px; font-weight: bold; color: var(--primary-blue);" id="stat-total-events">0</p>
+                    <p style="font-size: 12px; color: var(--muted-text);">Total Hackathons Hosted</p>
+                </div>
+                <div>
+                    <p style="font-size: 24px; font-weight: bold; color: var(--success-msg);" id="stat-active-events">0</p>
+                    <p style="font-size: 12px; color: var(--muted-text);">Active Hackathons</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- PROFILE VIEW (Initially Hidden) -->
+    <main id="view-profile" class="main-container" style="display: none;">
+        <div class="card" style="max-width: 600px; margin: 0 auto;">
+            <h2 style="color: var(--primary-blue); margin-bottom: 20px;">Edit Club Profile</h2>
+            <form id="edit-profile-form">
+                <div class="form-group">
+                    <label class="form-label">Club/Chapter Name</label>
+                    <input type="text" id="edit-club-name" class="form-input" readonly style="background-color: #e9ecef; cursor: not-allowed; font-weight: 600; color: var(--primary-blue);">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Executive Name</label>
+                    <input type="text" id="edit-exec-name" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Position in Club</label>
+                    <input type="text" id="edit-position" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Branch/Department</label>
+                    <input type="text" id="edit-branch" class="form-input" required>
+                </div>
+                <button type="submit" id="update-profile-btn" class="btn-submit" style="width: 100%;">Update Changes</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- SETTINGS VIEW (Initially Hidden) -->
+    <main id="view-settings" class="main-container" style="display: none;">
+        <div class="card" style="max-width: 600px; margin: 0 auto;">
+            <h2 style="color: var(--primary-blue); margin-bottom: 20px;">Platform Settings</h2>
+            <p style="color: var(--muted-text);">Your club notification preferences and security settings will go here.</p>
+        </div>
+    </main>
+
+    <!-- PAST WINNERS VIEW -->
+    <main id="view-winners" class="main-container" style="display: none;">
+        <div class="dashboard-header" style="flex-direction: column; align-items: flex-start; gap: 15px;">
+            <h2 style="color: var(--primary-blue);">Previous Hackathons & Winners</h2>
+            
+            <div class="form-group" style="width: 100%; max-width: 400px; margin-bottom: 0;">
+                <label class="form-label" style="margin-bottom: 8px;">Filter by Host Club</label>
+                <select id="winner-club-filter" class="form-input">
+                    <option value="all">All Clubs</option>
+                    <option value="GDG-VIT">GDG-VIT</option>
+                    <option value="CSI-VIT">CSI-VIT</option>
+                    <option value="ACM-VIT">ACM-VIT</option>
+                    <option value="Vinnovate-VIT">Vinnovate-VIT</option>
+                    <option value="Codechef-VIT">Codechef-VIT</option>
+                    <option value="IEEE-VIT">IEEE-VIT</option>
+                    <option value="ISTE-VIT">ISTE-VIT</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="winners-list" class="item-list" style="margin-top: 20px;">
+            <p style="color: var(--muted-text); font-size: 14px;">Loading winners...</p>
+        </div>
+    </main>
+
+    <!-- Create Hackathon Modal -->
+    <div id="create-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="color: var(--primary-blue);">Create New Hackathon</h3>
+                <button id="close-modal" class="close-modal">&times;</button>
+            </div>
+            <form id="create-hackathon-form">
+                <div class="form-group">
+                    <label class="form-label">Hackathon Name</label>
+                    <input type="text" id="hack-name" class="form-input" placeholder="e.g. Code Sprint 2026" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="hack-description" class="form-input" rows="3" placeholder="Briefly describe what this hackathon is about, its theme, and what participants will build..." required style="resize: vertical;"></textarea>
+                </div>
+                <div class="form-group" style="display: flex; gap: 10px;">
+                    <div style="flex: 1;">
+                        <label class="form-label">Start Date</label>
+                        <input type="date" id="hack-start-date" class="form-input" required>
+                    </div>
+                    <div style="flex: 1;">
+                        <label class="form-label">End Date</label>
+                        <input type="date" id="hack-end-date" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-group" style="display: flex; gap: 10px;">
+                    <div style="flex: 1;">
+                        <label class="form-label">Application Deadline</label>
+                        <input type="date" id="hack-deadline" class="form-input" required>
+                    </div>
+                    <div style="flex: 1;">
+                        <label class="form-label">Total Evaluation Rounds</label>
+                        <input type="number" id="hack-rounds" class="form-input" min="1" max="5" value="1" required>
+                    </div>
+                </div>
+                <button type="submit" id="submit-hackathon" class="btn-submit" style="width: 100%;">Create Hackathon</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="/js/club-dashboard.js"></script>
+</body>
+</html>

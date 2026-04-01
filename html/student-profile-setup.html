@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Setup - VIT Collab Hub</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Reuse Global Styles & Inject Profile Styles -->
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/profile.css">
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <header class="top-navbar">
+        <a href="student-dashboard.html" class="nav-brand" style="text-decoration: none;">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c5/Vellore_Institute_of_Technology_seal_2017.svg/1200px-Vellore_Institute_of_Technology_seal_2017.svg.png"
+                alt="VIT Logo" class="nav-logo" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; background: white; padding: 2px;">
+            <span class="nav-title">VIT COLLAB HUB</span>
+        </a>
+
+        <!-- Center Name -->
+        <div style="position: absolute; left: 50%; transform: translateX(-50%);">
+            <span id="nav-user-name" style="color: white; font-weight: 600; font-size: 15px; letter-spacing: 0.5px;">Student</span>
+        </div>
+
+        <div class="header-actions" style="display: flex; align-items: center; gap: 15px;">
+            <button class="notifications-btn" title="Notifications" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem; position: relative;">
+                <i class="fa-regular fa-bell"></i>
+                <span class="badge" id="nav-notification-badge" style="position: absolute; top: -5px; right: -8px; background: var(--danger-msg); color: white; font-size: 0.65rem; padding: 2px 5px; border-radius: 10px; font-weight: bold;">3</span>
+            </button>
+            <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="Student Avatar" id="nav-avatar" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; cursor: pointer;">
+            <button id="logoutBtn" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </div>
+    </header>
+
+    <!-- Sub Navbar -->
+    <div class="sub-navbar">
+        <div id="tab-dashboard" class="sub-nav-link" onclick="window.location.href='student-dashboard.html'">
+            <span class="icon-btn btn-blue nav-icon" style="pointer-events: none;">
+                <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+            </span>
+            <span>Dashboard</span>
+        </div>
+        <div id="tab-members" class="sub-nav-link" onclick="window.location.href='browse-members.html'">
+            <span class="icon-btn nav-icon" style="background-color: #0dcaf0; color: #005a6e; pointer-events: none;">
+                <i class="fa-solid fa-users"></i>
+            </span>
+            <span>Browse Members</span>
+        </div>
+        <div id="tab-hackathons" class="sub-nav-link" onclick="window.location.href='student-hackathons.html'">
+            <span class="icon-btn nav-icon" style="background-color: var(--success-msg); color: white; pointer-events: none;">
+                <i class="fa-solid fa-rocket"></i>
+            </span>
+            <span>Hackathons</span>
+        </div>
+        <div id="tab-profile" class="sub-nav-link active">
+            <span class="icon-btn btn-indigo nav-icon" style="pointer-events: none;">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </span>
+            <span>Profile Settings</span>
+        </div>
+    </div>
+
+    <!-- Main Profile Container -->
+    <div class="profile-container">
+
+        <!-- Compact Profile Header -->
+        <div class="profile-header-card" style="margin-top: 0; align-items: center; padding: 18px 30px; border-top: 3px solid var(--primary-blue);">
+            <div class="profile-user-info" style="align-items: center; gap: 18px;">
+                <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="Student Avatar" id="profile-avatar"
+                    style="width: 55px; height: 55px; border-radius: 50%; border: 3px solid var(--border-color); object-fit: cover; background: #fff;">
+                <div class="user-titles">
+                    <h1 id="display-name" style="font-size: 1.25rem; margin-bottom: 2px;">Loading Profile...</h1>
+                    <p id="display-branch" style="font-size: 0.85rem;"><i class="fa-solid fa-graduation-cap"></i> Fetching details</p>
+                </div>
+            </div>
+            <div class="profile-quick-actions">
+                <div class="rating-badge" id="display-rating" style="font-size: 0.8rem; padding: 5px 12px;">
+                    <i class="fa-solid fa-star"></i> -- / 5.0 Rating
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Settings Grid Layout -->
+        <main class="profile-grid">
+            
+            <!-- Left Sidebar (Stats & Links) -->
+            <aside class="sidebar-info">
+                <div class="card">
+                    <div class="section-header">
+                        <h2><i class="fa-solid fa-chart-line"></i> Track Record</h2>
+                    </div>
+                    <ul class="stats-list">
+                        <li><span>Projects Completed</span> <span id="stat-completed">-</span></li>
+                        <li><span>Total Mentor Reviews</span> <span id="stat-reviews">-</span></li>
+                    </ul>
+                </div>
+
+                <!-- Previous Projects Details -->
+                <div class="card" style="margin-top: 20px;">
+                    <div class="section-header">
+                        <h2 style="font-size: 1.2rem; color: var(--text-primary); display: flex; align-items: center; gap: 10px; font-weight: 600; margin-bottom: 0;">
+                            <i class="fa-solid fa-folder-open"></i> Previous Projects
+                        </h2>
+                    </div>
+                    
+                    <div class="projects-list" id="previous-projects-list" style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
+                        <div class="text-center text-muted" style="padding: 10px; font-size: 0.9rem;">
+                            No projects finished yet.
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Right Area (Edit Forms) -->
+            <section class="edit-profile-section">
+                <form id="profileForm" class="card">
+                    <div class="form-section">
+                        <h3><i class="fa-solid fa-address-card"></i> Basic Information</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="input-name">Full Name</label>
+                                <input type="text" id="input-name" class="form-control" placeholder="Your Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="input-reg">Registration Number</label>
+                                <input type="text" id="input-reg" class="form-control" placeholder="e.g. 21BCE0000" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="input-gender">Gender</label>
+                                <select id="input-gender" class="form-control" required>
+                                    <option value="" disabled selected>Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="input-branch">Branch / Department</label>
+                                <select id="input-branch" class="form-control" required>
+                                    <option value="Computer Science">Computer Science</option>
+                                    <option value="Information Technology">Information Technology</option>
+                                    <option value="Electrical Engineering">Electrical Engineering</option>
+                                    <option value="Mechanical Engineering">Mechanical Engineering</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="input-block">Hostel Block (If applicable)</label>
+                                <input type="text" id="input-block" class="form-control" placeholder="e.g. Q Block">
+                            </div>
+                            <div class="form-group form-group-full">
+                                <label for="input-email">Institution Email</label>
+                                <input type="email" id="input-email" class="form-control" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;">
+
+                    <div class="form-section">
+                        <h3><i class="fa-solid fa-code"></i> Technical Skills</h3>
+                        <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 15px;">Add skills to match with related projects. Press <kbd>Enter</kbd> to add.</p>
+                        
+                        <div class="skills-input-wrapper" id="skillTagsContainer">
+                            <!-- Skill tags will be injected here automatically by JS -->
+                            <input type="text" id="skillInput" placeholder="Type a skill (e.g. React) and press Enter...">
+                        </div>
+                    </div>
+
+                    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;">
+
+                    <div class="form-section">
+                        <h3><i class="fa-solid fa-link"></i> Profiles & Links</h3>
+                        <div class="form-grid">
+                            <div class="form-group form-group-full">
+                                <label for="input-github"><i class="fa-brands fa-github"></i> GitHub Profile URL</label>
+                                <input type="url" id="input-github" class="form-control" placeholder="https://github.com/username">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px;">
+                        <button type="button" class="btn btn-outline" onclick="window.location.reload();">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="saveProfileBtn">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Profile
+                        </button>
+                    </div>
+
+                </form>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Floating Messages Button -->
+    <button id="fabMessages" style="position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; border-radius: 50%; background: var(--primary-blue); color: #fff; border: none; box-shadow: 0 10px 25px rgba(13, 110, 253, 0.4); font-size: 1.8rem; cursor: pointer; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: var(--transition);">
+        <i class="fa-solid fa-message"></i>
+    </button>
+
+    <!-- Side Chat Panel overlay -->
+    <div id="sideChatOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.3); z-index: 10000; backdrop-filter: blur(2px);"></div>
+
+    <!-- Side Chat Panel -->
+    <div id="sideChatPanel" style="position: fixed; top: 0; right: -450px; width: 400px; max-width: 100vw; height: 100vh; background: var(--bg-color); box-shadow: -10px 0 30px rgba(0,0,0,0.1); z-index: 10001; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; border-left: 1px solid var(--border-color);">
+        <div style="padding: 25px; background: var(--card-bg); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0; font-size: 1.3rem; color: var(--text-primary);"><i class="fa-solid fa-comments" style="color: var(--primary-blue); margin-right: 10px;"></i> Messages</h2>
+            <button id="closeChatPanelBtn" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); transition: color 0.2s;" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='var(--text-secondary)'"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div style="flex: 1; padding: 20px; overflow-y: auto;">
+            <!-- Placeholder for chats -->
+            <div style="text-align: center; color: var(--text-secondary); margin-top: 50px;">
+                <i class="fa-solid fa-comment-slash" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5; color: var(--primary-blue);"></i>
+                <p style="font-size: 1.1rem; font-weight: 500;">No active chats right now</p>
+                <p style="font-size: 0.9rem; margin-top: 5px;">Your recent messages will appear here.</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../js/firebase-config.js"></script>
+    <script type="module" src="../js/auth.js"></script>
+    <script type="module" src="../js/student-profile.js"></script>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - VIT Collab Hub</title>
+
+    <!-- Google Fonts  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+
+    <!-- Top Navigation Bar -->
+    <header class="top-navbar">
+        <a href="student-dashboard.html" class="nav-brand" style="text-decoration: none;">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c5/Vellore_Institute_of_Technology_seal_2017.svg/1200px-Vellore_Institute_of_Technology_seal_2017.svg.png"
+                alt="VIT Logo" class="nav-logo" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; background: white; padding: 2px;">
+            <span class="nav-title">VIT COLLAB HUB</span>
+        </a>
+
+        <!-- Center Name -->
+        <div style="position: absolute; left: 50%; transform: translateX(-50%);">
+            <span id="nav-user-name" style="color: white; font-weight: 600; font-size: 15px; letter-spacing: 0.5px;">Loading...</span>
+        </div>
+
+        <div class="header-actions" style="display: flex; align-items: center; gap: 15px;">
+            <button class="notifications-btn" title="Notifications" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem; position: relative;">
+                <i class="fa-regular fa-bell"></i>
+                <span class="badge" id="nav-notification-badge" style="position: absolute; top: -5px; right: -8px; background: var(--danger-msg); color: white; font-size: 0.65rem; padding: 2px 5px; border-radius: 10px; font-weight: bold;">3</span>
+            </button>
+            <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="Student Avatar" id="nav-avatar" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; cursor: pointer;">
+            <button id="logoutBtn" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </div>
+    </header>
+
+    <!-- Sub Navbar -->
+    <div class="sub-navbar">
+        <div id="tab-dashboard" class="sub-nav-link active">
+            <span class="icon-btn btn-blue nav-icon" style="pointer-events: none;">
+                <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+            </span>
+            <span>Dashboard</span>
+        </div>
+        <div id="tab-members" class="sub-nav-link" onclick="window.location.href='browse-members.html'">
+            <span class="icon-btn nav-icon" style="background-color: #0dcaf0; color: #005a6e; pointer-events: none;">
+                <i class="fa-solid fa-users"></i>
+            </span>
+            <span>Browse Members</span>
+        </div>
+        <div id="tab-hackathons" class="sub-nav-link" onclick="window.location.href='student-hackathons.html'">
+            <span class="icon-btn nav-icon" style="background-color: var(--success-msg); color: white; pointer-events: none;">
+                <i class="fa-solid fa-rocket"></i>
+            </span>
+            <span>Hackathons</span>
+        </div>
+        <div id="tab-profile" class="sub-nav-link" onclick="window.location.href='student-profile-setup.html'">
+            <span class="icon-btn btn-indigo nav-icon" style="pointer-events: none;">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </span>
+            <span>Profile Settings</span>
+        </div>
+    </div>
+
+    <!-- Main Dashboard Container -->
+    <main class="dashboard-container">
+
+        <!-- Welcome Header -->
+        <header class="dashboard-header">
+            <div class="greeting-section">
+                <h1 id="welcomeMessage">Welcome back, Student! 👋</h1>
+                <p>Here's what's happening with your projects today.</p>
+            </div>
+            <div class="header-actions" style="display: flex; gap: 10px;">
+                <button class="btn btn-outline" id="joinProjectBtn" style="background: white; border-color: var(--primary-blue); color: var(--primary-blue);">
+                    <i class="fa-solid fa-right-to-bracket"></i> Join Project
+                </button>
+                <button class="btn btn-primary" id="createNewProjectBtn">
+                    <i class="fa-solid fa-plus"></i> New Project
+                </button>
+            </div>
+        </header>
+
+        <!-- Left Column: Main Content (Projects Focus) -->
+        <div class="main-content">
+
+            <section class="active-projects-section">
+                <div class="section-header">
+                    <h2><i class="fa-solid fa-folder-open"></i> Active Projects</h2>
+                    <a href="#" class="view-all">View All</a>
+                </div>
+
+                <div class="projects-grid" id="projectsContainer">
+                    <!-- Project Cards Will Be Injected Here via JS -->
+
+                    <!-- Skeleton Loader matching CSS structure (for initial mount) -->
+                    <div class="card project-card skeleton-card">
+                        <div class="project-info">
+                            <div class="project-header">
+                                <h3 class="project-title"
+                                    style="background:#e2e8f0; width:60%; height:24px; border-radius:4px;"></h3>
+                            </div>
+                            <div class="project-tech-stack"
+                                style="height: 24px; background:#e2e8f0; width:40%; border-radius:4px; margin: 15px 0;">
+                            </div>
+                            <div class="project-meta"
+                                style="height: 32px; background:#e2e8f0; width:50%; border-radius:4px;"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Right Column: Side Content (Invites & Hackathons) -->
+        <div class="side-content">
+
+            <!-- Pending Invitations -->
+            <section class="invites-section">
+                <div class="section-header">
+                    <h2><i class="fa-solid fa-envelope-open-text"></i> Pending Invites</h2>
+                </div>
+
+                <div class="card">
+                    <div class="invites-list" id="invitesContainer">
+                        <!-- Invites will be loaded dynamically -->
+                        <div class="text-center text-muted" style="padding: 20px 0; font-size: 0.9rem;">
+                            <i class="fa-solid fa-inbox mb-2"
+                                style="font-size: 1.5rem; display:block; margin-bottom: 10px; opacity:0.5;"></i>
+                            Loading invitations...
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+
+        </div>
+    </main>
+
+    <!-- Floating Messages Button -->
+    <button id="fabMessages"
+        style="position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; border-radius: 50%; background: var(--primary-blue); color: #fff; border: none; box-shadow: 0 10px 25px rgba(13, 110, 253, 0.4); font-size: 1.8rem; cursor: pointer; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: var(--transition);">
+        <i class="fa-solid fa-message"></i>
+    </button>
+
+    <!-- Side Chat Panel overlay -->
+    <div id="sideChatOverlay"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.3); z-index: 10000; backdrop-filter: blur(2px);">
+    </div>
+
+    <!-- Side Chat Panel -->
+    <div id="sideChatPanel"
+        style="position: fixed; top: 0; right: -450px; width: 400px; max-width: 100vw; height: 100vh; background: var(--bg-color); box-shadow: -10px 0 30px rgba(0,0,0,0.1); z-index: 10001; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; border-left: 1px solid var(--border-color);">
+        <div
+            style="padding: 25px; background: var(--card-bg); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0; font-size: 1.3rem; color: var(--text-primary);"><i class="fa-solid fa-comments"
+                    style="color: var(--primary-blue); margin-right: 10px;"></i> Messages</h2>
+            <button id="closeChatPanelBtn"
+                style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); transition: color 0.2s;"
+                onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='var(--text-secondary)'"><i
+                    class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div style="flex: 1; padding: 20px; overflow-y: auto;">
+            <!-- Placeholder for chats -->
+            <div style="text-align: center; color: var(--text-secondary); margin-top: 50px;">
+                <i class="fa-solid fa-comment-slash"
+                    style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5; color: var(--primary-blue);"></i>
+                <p style="font-size: 1.1rem; font-weight: 500;">No active chats right now</p>
+                <p style="font-size: 0.9rem; margin-top: 5px;">Your recent messages will appear here.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Project Modal -->
+    <div id="newProjectModal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10002; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
+        <div class="card" style="width: 90%; max-width: 500px; padding: 30px; border-radius: 12px; position: relative; max-height: 90vh; overflow-y: auto;">
+            <button id="closeNewProjectModalBtn" style="position: absolute; right: 20px; top: 20px; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-secondary);"><i class="fa-solid fa-xmark"></i></button>
+            <h2 style="font-size: 1.4rem; color: var(--text-primary); margin-bottom: 20px;"><i class="fa-solid fa-folder-plus text-gradient" style="margin-right: 10px;"></i> Create New Project</h2>
+            <form id="newProjectForm" style="display: flex; flex-direction: column; gap: 15px;">
+                <div class="form-group">
+                    <label class="form-label">Project Title <span style="color: var(--danger);">*</span></label>
+                    <input type="text" class="form-input" id="projTitle" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Idea Description <span style="color: var(--danger);">*</span></label>
+                    <textarea class="form-input" id="projDesc" rows="3" required></textarea>
+                </div>
+                <div class="form-group" style="display: flex; gap: 10px;">
+                    <div style="flex: 1;">
+                        <label class="form-label">Team Size <span style="color: var(--danger);">*</span></label>
+                        <select class="form-input" id="projTeamSize" required>
+                            <option value="1">1 Member (Solo)</option>
+                            <option value="2">2 Members</option>
+                            <option value="3">3 Members</option>
+                            <option value="4">4 Members</option>
+                            <option value="5">5 Members</option>
+                            <option value="6">6 Members</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Skills Required (Comma separated) <span style="color: var(--danger);">*</span></label>
+                    <input type="text" class="form-input" id="projSkills" placeholder="e.g. React, Node.js, AI" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Leader Registration Number <span style="color: var(--danger);">*</span></label>
+                    <input type="text" class="form-input" id="projLeaderReg" placeholder="e.g. 24BCE1000" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Project PPT / Presentation Link <span style="color: var(--danger);">*</span></label>
+                    <input type="url" class="form-input" id="projPptLink" placeholder="https://drive.google.com/..." required>
+                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">Paste a Google Drive, OneDrive, or any shareable link to your PPT.</p>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Admin Email to Send Request <span style="color: var(--danger);">*</span></label>
+                    <input type="email" class="form-input" id="projAdminEmail" placeholder="admin@vit.ac.in" required>
+                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">Must be a valid registered admin.</p>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" id="submitProjectBtn" style="width: 100%; justify-content: center; margin-top: 10px;">
+                    Send Request to Admin
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Join Project Modal -->
+    <div id="joinProjectModal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10002; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
+        <div class="card" style="width: 90%; max-width: 400px; padding: 30px; border-radius: 12px; position: relative;">
+            <button id="closeJoinProjectModalBtn" style="position: absolute; right: 20px; top: 20px; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-secondary);"><i class="fa-solid fa-xmark"></i></button>
+            <h2 style="font-size: 1.4rem; color: var(--text-primary); margin-bottom: 20px;"><i class="fa-solid fa-right-to-bracket text-gradient" style="margin-right: 10px;"></i> Join a Project</h2>
+            <form id="fetchProjectForm" style="display: flex; flex-direction: column; gap: 15px;">
+                <div class="form-group">
+                    <label class="form-label">Unique Project Code <span style="color: var(--danger);">*</span></label>
+                    <input type="text" class="form-input" id="joinProjectCode" placeholder="Enter 6-char code" required style="text-transform: uppercase;">
+                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">Ask your team leader for the code.</p>
+                </div>
+                <button type="submit" class="btn btn-primary" id="fetchProjectBtn" style="width: 100%; justify-content: center; margin-top: 10px;">
+                    Fetch Details
+                </button>
+            </form>
+
+            <div id="projectDetailsCard" style="display: none; margin-top: 20px; padding: 15px; background: var(--card-bg); border: 2px dashed var(--border-color); border-radius: 8px;">
+                <h3 id="fetchedProjTitle" style="color: var(--text-primary); font-size: 1.1rem; margin-bottom: 5px;"></h3>
+                <p id="fetchedProjDesc" style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 15px;"></p>
+                <div style="font-size: 0.85rem; color: var(--text-primary); margin-bottom: 15px; display: flex; justify-content: space-between;">
+                    <span><strong>Leader:</strong> <span id="fetchedProjLeader"></span></span>
+                    <span><strong>Slots:</strong> <span id="fetchedProjSlots"></span></span>
+                </div>
+                <form id="confirmJoinForm">
+                    <input type="hidden" id="confirmedProjId">
+                    <button type="submit" class="btn btn-primary" id="confirmJoinBtn" style="width: 100%; justify-content: center; background: var(--success-msg); border-color: var(--success-msg);">
+                        Confirm Join
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div> <!-- /close .card and #joinProjectModal -->
+
+    <!-- App Logic Scripts (type="module" to enable import/export and robust scoping) -->
+    <script type="module" src="../js/firebase-config.js"></script>
+    <script type="module" src="../js/auth.js"></script>
+    <script type="module" src="../js/student-dashboard.js?v=4"></script>
+</body>
+
+</html>

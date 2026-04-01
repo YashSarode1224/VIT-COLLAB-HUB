@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Members - VIT Collab Hub</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Use Existing Global Styles -->
+    <link rel="stylesheet" href="../css/global.css">
+    
+    <style>
+        .members-container {
+            padding: 40px 5%;
+            max-width: 1400px;
+            margin: 120px auto 30px;
+        }
+
+        .search-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .search-header h1 {
+            font-size: 2.5rem;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .search-bar-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            gap: 15px;
+            background: var(--card-bg);
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(112, 144, 176, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 10px 15px;
+            font-size: 1rem;
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .filter-select {
+            border: none;
+            background: rgba(13, 110, 253, 0.05);
+            padding: 10px 15px;
+            border-radius: 10px;
+            color: var(--primary-blue);
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .member-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px 25px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            text-align: center;
+            position: relative;
+        }
+
+        .member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+            border-color: var(--primary-blue);
+        }
+
+        .member-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            object-fit: cover;
+            border: 4px solid var(--bg-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .member-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .member-role {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .member-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .skill-pill {
+            background: rgba(13, 110, 253, 0.08);
+            color: var(--primary-blue);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .member-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .rating-badge-top {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        /* Profile Modal Styles */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+            z-index: 10005; display: none; align-items: center; justify-content: center;
+        }
+        .profile-modal {
+            background: var(--card-bg); width: 100%; max-width: 600px;
+            border-radius: 20px; overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative;
+            animation: modalFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .modal-cover {
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary-blue), #1e3a8a);
+            position: relative;
+        }
+        .modal-close {
+            position: absolute; top: 15px; right: 15px;
+            background: rgba(255,255,255,0.2); border: none; font-size: 1.2rem;
+            color: #fff; cursor: pointer; width: 35px; height: 35px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; transition: var(--transition);
+        }
+        .modal-close:hover { background: rgba(255,255,255,0.4); }
+        
+        .modal-body {
+            padding: 0 30px 30px;
+            text-align: center;
+            margin-top: -50px;
+        }
+        .modal-avatar {
+            width: 100px; height: 100px; border-radius: 50%; object-fit: cover;
+            border: 4px solid var(--card-bg); margin: 0 auto 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative; z-index: 2;
+        }
+        .modal-name {
+            font-size: 1.5rem; color: var(--text-primary); margin-bottom: 5px; font-weight: 700;
+        }
+        .modal-role {
+            color: var(--primary-blue); font-weight: 600; font-size: 0.95rem; margin-bottom: 15px;
+        }
+        .modal-branch {
+            color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 25px;
+            display: flex; justify-content: center; gap: 8px; align-items: center;
+        }
+        .modal-stats {
+            display: flex; justify-content: space-around; background: var(--bg-color);
+            padding: 15px; border-radius: 12px; margin-bottom: 25px; border: 1px solid var(--border-color);
+        }
+        .modal-stat {
+            display: flex; flex-direction: column; gap: 5px;
+        }
+        .stat-val { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
+        .stat-label { font-size: 0.8rem; color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <header class="top-navbar">
+        <a href="student-dashboard.html" class="nav-brand" style="text-decoration: none;">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c5/Vellore_Institute_of_Technology_seal_2017.svg/1200px-Vellore_Institute_of_Technology_seal_2017.svg.png"
+                alt="VIT Logo" class="nav-logo" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; background: white; padding: 2px;">
+            <span class="nav-title">VIT COLLAB HUB</span>
+        </a>
+
+        <!-- Center Name -->
+        <div style="position: absolute; left: 50%; transform: translateX(-50%);">
+            <span id="nav-user-name" style="color: white; font-weight: 600; font-size: 15px; letter-spacing: 0.5px;">Student</span>
+        </div>
+
+        <div class="header-actions" style="display: flex; align-items: center; gap: 15px;">
+            <button class="notifications-btn" title="Notifications" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem; position: relative;">
+                <i class="fa-regular fa-bell"></i>
+                <span class="badge" id="nav-notification-badge" style="position: absolute; top: -5px; right: -8px; background: var(--danger-msg); color: white; font-size: 0.65rem; padding: 2px 5px; border-radius: 10px; font-weight: bold;">3</span>
+            </button>
+            <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="Student Avatar" id="nav-avatar" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; cursor: pointer;">
+            <button id="logoutBtn" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </div>
+    </header>
+
+    <!-- Sub Navbar -->
+    <div class="sub-navbar">
+        <div id="tab-dashboard" class="sub-nav-link" onclick="window.location.href='student-dashboard.html'">
+            <span class="icon-btn btn-blue nav-icon" style="pointer-events: none;">
+                <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+            </span>
+            <span>Dashboard</span>
+        </div>
+        <div id="tab-members" class="sub-nav-link active">
+            <span class="icon-btn nav-icon" style="background-color: #0dcaf0; color: #005a6e; pointer-events: none;">
+                <i class="fa-solid fa-users"></i>
+            </span>
+            <span>Browse Members</span>
+        </div>
+        <div id="tab-hackathons" class="sub-nav-link" onclick="window.location.href='student-hackathons.html'">
+            <span class="icon-btn nav-icon" style="background-color: var(--success-msg); color: white; pointer-events: none;">
+                <i class="fa-solid fa-rocket"></i>
+            </span>
+            <span>Hackathons</span>
+        </div>
+        <div id="tab-profile" class="sub-nav-link" onclick="window.location.href='student-profile-setup.html'">
+            <span class="icon-btn btn-indigo nav-icon" style="pointer-events: none;">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </span>
+            <span>Profile Settings</span>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="members-container">
+        
+        <!-- Header & Search -->
+        <div class="search-header">
+            <h1>Find Your Perfect Team Mix</h1>
+            <p style="color: var(--text-secondary); margin-bottom: 25px;">Search through talented students across branches for your next big project.</p>
+            
+            <div class="search-bar-wrapper">
+                <i class="fa-solid fa-magnifying-glass" style="color: var(--text-secondary); align-self: center; margin-left: 10px;"></i>
+                <input type="text" class="search-input" placeholder="Search by name, skills, or branch..." id="searchInput">
+                <button class="btn btn-primary" style="padding: 10px 25px;"><i class="fa-solid fa-filter"></i> Search</button>
+            </div>
+        </div>
+
+        <!-- Members Grid -->
+        <div class="members-grid" id="membersGrid">
+            <!-- Simulated Loader Cards initially -->
+            <div class="member-card">
+                <div class="member-avatar" style="background:#e2e8f0;"></div>
+                <div style="height:20px; background:#e2e8f0; width:60%; margin: 0 auto 10px; border-radius:4px;"></div>
+                <div style="height:15px; background:#e2e8f0; width:40%; margin: 0 auto 20px; border-radius:4px;"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Floating Messages Button -->
+    <button id="fabMessages" style="position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; border-radius: 50%; background: var(--primary-blue); color: #fff; border: none; box-shadow: 0 10px 25px rgba(13, 110, 253, 0.4); font-size: 1.8rem; cursor: pointer; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: var(--transition);">
+        <i class="fa-solid fa-message"></i>
+    </button>
+
+    <!-- Full Profile View Modal -->
+    <div class="modal-overlay" id="profileModalOverlay">
+        <div class="profile-modal">
+            <div class="modal-cover">
+                <button class="modal-close" id="closeProfileModalBtn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <img src="" alt="Avatar" class="modal-avatar" id="modalAvatar">
+                <h2 class="modal-name" id="modalName">Name</h2>
+                <div class="modal-role" id="modalRole"><i class="fa-solid fa-code"></i> Role</div>
+                <div class="modal-branch"><i class="fa-solid fa-graduation-cap"></i> <span id="modalBranch">Branch</span></div>
+                
+                <div class="modal-stats">
+                    <div class="modal-stat">
+                        <span class="stat-val" id="modalRating">4.0</span>
+                        <span class="stat-label">Rating</span>
+                    </div>
+                    <div class="modal-stat">
+                        <span class="stat-val">12</span>
+                        <span class="stat-label">Projects</span>
+                    </div>
+                    <div class="modal-stat">
+                        <span class="stat-val">Active</span>
+                        <span class="stat-label">Status</span>
+                    </div>
+                </div>
+
+                <div style="text-align: left; margin-bottom: 25px;">
+                    <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 10px;">All Technical Skills</h3>
+                    <div class="member-skills" id="modalSkills" style="justify-content: flex-start;">
+                        <!-- All Skills injected here -->
+                    </div>
+                    
+                    <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 10px; margin-top: 15px;">Top 3 Technical Skills</h3>
+                    <div class="member-skills" id="modalTopSkills" style="justify-content: flex-start;">
+                        <!-- Top 3 Skills injected here -->
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="alert('Connection request sent!')">
+                    <i class="fa-solid fa-user-plus"></i> Connect
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Side Chat Panel overlay -->
+    <div id="sideChatOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.3); z-index: 10000; backdrop-filter: blur(2px);"></div>
+
+    <!-- Side Chat Panel -->
+    <div id="sideChatPanel" style="position: fixed; top: 0; right: -450px; width: 400px; max-width: 100vw; height: 100vh; background: var(--bg-color); box-shadow: -10px 0 30px rgba(0,0,0,0.1); z-index: 10001; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; border-left: 1px solid var(--border-color);">
+        <div style="padding: 25px; background: var(--card-bg); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0; font-size: 1.3rem; color: var(--text-primary);"><i class="fa-solid fa-comments" style="color: var(--primary-blue); margin-right: 10px;"></i> Messages</h2>
+            <button id="closeChatPanelBtn" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); transition: color 0.2s;" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='var(--text-secondary)'"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div style="flex: 1; padding: 20px; overflow-y: auto;">
+            <!-- Placeholder for chats -->
+            <div style="text-align: center; color: var(--text-secondary); margin-top: 50px;">
+                <i class="fa-solid fa-comment-slash" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5; color: var(--primary-blue);"></i>
+                <p style="font-size: 1.1rem; font-weight: 500;">No active chats right now</p>
+                <p style="font-size: 0.9rem; margin-top: 5px;">Your recent messages will appear here.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Local logic for Browse Members page -->
+    <script type="module" src="../js/browse-members.js"></script>
+</body>
+</html>

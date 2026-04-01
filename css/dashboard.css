@@ -1,0 +1,461 @@
+/* Dashboard Layout */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.dashboard-title {
+    color: var(--primary-blue);
+    font-size: 24px;
+}
+
+/* Lists and Cards */
+.item-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.item-card {
+    background: white;
+    border: 1px solid var(--border-accent);
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: box-shadow 0.2s;
+}
+.item-card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.item-details h4 {
+    margin-bottom: 5px;
+    color: var(--dark-text);
+}
+.item-details p {
+    font-size: 13px;
+    color: var(--muted-text);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--primary-blue);
+    border: 1px solid var(--primary-blue);
+    padding: 6px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+.btn-secondary:hover {
+    background: var(--primary-blue);
+    color: white;
+}
+
+/* Circular Card Actions */
+.card-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* .icon-btn, .btn-blue, .btn-indigo, .btn-orange, .btn-red - moved to global.css */
+
+
+/* Modals */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+.modal-content {
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 25px;
+    width: 90%;
+    max-width: 500px;
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--muted-text);
+}
+
+@media(max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.dashboard-container {
+    padding: 20px 5%;
+    max-width: 1400px;
+    margin: 120px auto 0; /* Offset for dual navbars */
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+
+/* Page Header area */
+.dashboard-header {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.greeting-section h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.greeting-section p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+}
+
+/* Section Titles */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-header h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-header h2 i {
+    color: var(--primary-blue);
+    background: rgba(13, 110, 253, 0.1);
+    padding: 8px;
+    border-radius: 10px;
+}
+
+.view-all {
+    color: var(--primary-blue);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.view-all:hover {
+    color: var(--primary-blue-hover);
+    text-decoration: underline;
+}
+
+/* Main Content Area */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Project Cards */
+.projects-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.project-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.project-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 6px;
+    height: 100%;
+    background: var(--gradient-header);
+    border-radius: 20px 0 0 20px;
+}
+
+.project-info {
+    flex: 1;
+}
+
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.project-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--text-primary);
+}
+
+.project-tech-stack {
+    display: flex;
+    gap: 8px;
+    margin: 15px 0;
+}
+
+.tech-pill {
+    background: var(--bg-color);
+    color: var(--text-secondary);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid var(--border-color);
+}
+
+.project-meta {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.team-avatar-group {
+    display: flex;
+    align-items: center;
+}
+
+.team-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--card-bg);
+    margin-left: -10px;
+    object-fit: cover;
+}
+
+.team-avatar:first-child {
+    margin-left: 0;
+}
+
+.avatar-more {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--card-bg);
+    margin-left: -10px;
+    background: var(--bg-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    z-index: 1;
+}
+
+.project-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 15px;
+    padding-left: 20px;
+    border-left: 1px dashed var(--border-color);
+    margin-left: 20px;
+    min-width: 140px;
+}
+
+/* Side Content Area */
+.side-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Invite Items */
+.invites-list, .hackathons-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.invite-item {
+    padding: 18px;
+    background: var(--bg-color);
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.invite-item:hover {
+    border-color: var(--primary-blue);
+    background: #fff;
+    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.05);
+}
+
+.invite-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.invite-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(13, 202, 240, 0.1);
+    color: var(--cyan-accent);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.invite-details h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.invite-details p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.invite-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.invite-actions .btn {
+    flex: 1;
+    justify-content: center;
+}
+
+/* Hackathon Items */
+.hackathon-card {
+    position: relative;
+    padding: 0;
+    overflow: hidden;
+}
+
+.hackathon-banner {
+    height: 100px;
+    background: linear-gradient(120deg, var(--navy-blue) 0%, #1e3a8a 100%);
+    position: relative;
+}
+
+.hackathon-date-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.hackathon-content {
+    padding: 20px;
+}
+
+.hackathon-content h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.hackathon-content p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.hackathon-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border-color);
+    padding-top: 15px;
+    margin-top: 5px;
+}
+
+.hackathon-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .dashboard-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .project-card {
+        flex-direction: column;
+    }
+    
+    .project-actions {
+        border-left: none;
+        border-top: 1px dashed var(--border-color);
+        margin-left: 0;
+        padding-left: 0;
+        padding-top: 20px;
+        margin-top: 20px;
+        flex-direction: row;
+    }
+    
+    .project-actions .btn {
+        flex: 1;
+        justify-content: center;
+    }
+}

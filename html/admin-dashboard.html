@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIT COLLAB HUB - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <style>
+        .main-container {
+            display: block;
+            padding: 30px 20px 40px 20px;
+            max-width: 1200px;
+            margin: 120px auto 30px;
+            width: 100%;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        /* specific equal layout for admin sections */
+        @media (min-width: 768px) {
+            .dashboard-grid.admin-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        /* Make sub-nav tabs equal width */
+        .sub-navbar .sub-nav-link {
+            width: 180px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header class="top-navbar">
+        <div style="display: flex; align-items: center;">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c5/Vellore_Institute_of_Technology_seal_2017.svg/1200px-Vellore_Institute_of_Technology_seal_2017.svg.png" 
+                alt="VIT Logo" class="logo-img" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; background: white; padding: 2px;">
+            <div class="header-text">
+                <span class="header-title">VIT</span>
+                <span class="header-subtitle">(Vellore Campus)</span>
+            </div>
+        </div>
+        
+        <!-- Center Admin Name -->
+        <div style="position: absolute; left: 50%; transform: translateX(-50%);">
+            <span id="nav-user-name" style="color: white; font-weight: 600; font-size: 15px; letter-spacing: 0.5px;">Loading...</span>
+        </div>
+
+        <div class="header-actions">
+            <button id="logout-btn" class="btn-logout">Logout</button>
+        </div>
+    </header>
+
+    <!-- Sub Navbar (Admin Dashboard Style) -->
+    <div class="sub-navbar">
+        <div id="tab-dashboard" class="sub-nav-link active">
+            <span class="icon-btn btn-blue nav-icon">
+                <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+            </span>
+            <span>Dashboard</span>
+        </div>
+        <div id="tab-requests" class="sub-nav-link">
+            <span class="icon-btn nav-icon" style="background-color: #0dcaf0; color: #005a6e;">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            </span>
+            <span>Requests</span>
+        </div>
+        <div id="tab-profile" class="sub-nav-link">
+            <span class="icon-btn btn-indigo nav-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </span>
+            <span>Profile</span>
+        </div>
+    </div>
+
+    <!-- DASHBOARD VIEW -->
+    <main id="view-dashboard" class="main-container">
+        <div class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">Admin Dashboard</h1>
+                <p style="color: var(--muted-text); margin-top: 5px;">Manage mentored projects and review team performance.</p>
+            </div>
+        </div>
+
+        <div class="dashboard-grid admin-grid">
+            <!-- Left Column: Pending Mentor Requests -->
+            <div class="login-card" style="max-width: none; border-top: 4px solid #e53935; height: 100%; display: flex; flex-direction: column;">
+                <div class="card-header" style="background: white; padding: 20px; border-bottom: 1px solid var(--border-accent); flex-direction: row; justify-content: space-between;">
+                    <h3 style="margin: 0; font-size: 18px; color: var(--dark-text);">Pending Mentor Requests</h3>
+                    <span id="pending-count" style="background: #e53935; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 700;">0</span>
+                </div>
+                <div class="form-middle" style="padding: 20px; flex: 1;">
+                    <div id="mentor-requests-container" class="item-list">
+                        <p style="color: var(--muted-text); font-size: 14px; text-align: center;">No pending requests at the moment.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Active Mentored Projects -->
+            <div class="login-card" style="max-width: none; border-top: 4px solid var(--success-msg); height: 100%; display: flex; flex-direction: column;">
+                <div class="card-header" style="background: white; padding: 20px; border-bottom: 1px solid var(--border-accent); flex-direction: row; justify-content: space-between;">
+                    <h3 style="margin: 0; font-size: 18px; color: var(--dark-text);">Active Mentored Projects</h3>
+                    <span id="active-count" style="background: var(--success-msg); color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 700;">0</span>
+                </div>
+                <div class="form-middle" style="padding: 20px; background: #f8f9fa; flex: 1;">
+                    <div id="active-projects-container" class="item-list">
+                        <p style="color: var(--muted-text); font-size: 14px; text-align: center;">You are not actively mentoring any projects.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- REQUESTS VIEW (Placeholder) -->
+    <main id="view-requests" class="main-container" style="display: none;">
+        <div class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">Requests</h1>
+                <p style="color: var(--muted-text); margin-top: 5px;">Manage pending actions and team requests.</p>
+            </div>
+        </div>
+        <div class="login-card" style="max-width: none; border-top: 4px solid var(--primary-blue);">
+            <div class="form-middle" style="padding: 20px;">
+                <p style="color: var(--muted-text); font-size: 14px; text-align: center;">Request management interface coming soon.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- PROFILE VIEW -->
+    <main id="view-profile" class="main-container" style="display: none; padding-top: 5px;">
+        <div class="login-card" style="max-width: 600px; margin: 0 auto; border-top: 4px solid var(--primary-blue);">
+            <div class="card-header" style="background: white; padding: 20px; border-bottom: 1px solid var(--border-accent);">
+                <h3 style="margin: 0; font-size: 20px; color: var(--dark-text);">Admin Profile Details</h3>
+            </div>
+            
+            <div class="form-middle" style="padding: 25px;">
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label style="font-size: 13px; font-weight: 500; color: var(--dark-text); margin-bottom: 4px; display: block;">Employee / Auth ID</label>
+                    <input type="text" id="view-emp-id" class="input-field" readonly style="background-color: #e9ecef; cursor: not-allowed; font-weight: 600; color: var(--primary-blue);">
+                </div>
+
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label style="font-size: 13px; font-weight: 500; color: var(--dark-text); margin-bottom: 4px; display: block;">Faculty Name</label>
+                    <input type="text" id="view-name" class="input-field" readonly style="background-color: #f8f9fa; cursor: default;">
+                </div>
+
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label style="font-size: 13px; font-weight: 500; color: var(--dark-text); margin-bottom: 4px; display: block;">Contact Email</label>
+                    <input type="text" id="view-email" class="input-field" readonly style="background-color: #f8f9fa; cursor: default;">
+                </div>
+
+                <div class="input-group" style="margin-bottom: 5px;">
+                    <label style="font-size: 13px; font-weight: 500; color: var(--dark-text); margin-bottom: 4px; display: block;">School / Department</label>
+                    <input type="text" id="view-school" class="input-field" readonly style="background-color: #f8f9fa; cursor: default;">
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- RATING MODAL -->
+    <div id="rating-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="color: var(--primary-blue);">Conclude Project</h3>
+                <button id="close-modal" class="close-modal">&times;</button>
+            </div>
+            <p style="color: var(--muted-text); font-size: 14px; margin-bottom: 20px;">Please evaluate the team's performance (1-5 Stars). This validates their project for their student profile.</p>
+            
+            <div class="input-group" style="margin-bottom: 25px;">
+                <label style="font-size: 14px; font-weight: 500; display: block; margin-bottom: 8px;">Overall Rating</label>
+                <select id="project-rating" class="input-field" style="cursor: pointer;">
+                    <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+                    <option value="4">⭐⭐⭐⭐ 4 Stars</option>
+                    <option value="3">⭐⭐⭐ 3 Stars</option>
+                    <option value="2">⭐⭐ 2 Stars</option>
+                    <option value="1">⭐ 1 Star</option>
+                </select>
+            </div>
+            
+            <button id="submit-completion" class="btn btn-primary" style="width: 100%;">Finalize Project</button>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        Copyright &copy; 2026 Software Development Cell, VIT COLLAB HUB, Vellore-632 014.
+    </footer>
+
+    <!-- Firebase Logic -->
+    <script type="module" src="/js/admin-dashboard.js"></script>
+</body>
+</html>
