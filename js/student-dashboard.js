@@ -6,7 +6,7 @@
 
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { collection, query, where, getDocs, doc, getDoc, orderBy, limit, addDoc, updateDoc, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { collection, query, where, getDocs, doc, getDoc, orderBy, limit, addDoc, updateDoc, serverTimestamp, arrayUnion, deleteDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 
 function setupUI() {
@@ -105,6 +105,25 @@ function handleFormsHooks() {
     const fetchForm = document.getElementById('fetchProjectForm');
     const confirmJoinForm = document.getElementById('confirmJoinForm');
 
+    // Dynamic member reg number inputs for project creation
+    const projTeamSize = document.getElementById('projTeamSize');
+    const projMembersContainer = document.getElementById('projMembersContainer');
+    if (projTeamSize && projMembersContainer) {
+        projTeamSize.addEventListener('change', () => {
+            const size = parseInt(projTeamSize.value, 10);
+            projMembersContainer.innerHTML = '';
+            // size includes the leader, so generate (size - 1) member fields
+            for (let i = 1; i < size; i++) {
+                projMembersContainer.innerHTML += `
+                    <div class="form-group" style="margin-top: 10px;">
+                        <label class="form-label">Reg No. of Member ${i} <span style="color: var(--danger);">*</span></label>
+                        <input type="text" class="form-input proj-member-reg" placeholder="e.g. 24BCE100${i}" required>
+                    </div>
+                `;
+            }
+        });
+    }
+
     if (newForm) {
         newForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -137,6 +156,13 @@ function handleFormsHooks() {
                 
                 const pptLink = document.getElementById('projPptLink').value.trim();
 
+                // Collect member reg numbers
+                const memberRegInputs = document.querySelectorAll('.proj-member-reg');
+                const membersReg = [];
+                memberRegInputs.forEach(input => {
+                    if (input.value.trim()) membersReg.push(input.value.trim());
+                });
+
                 const projData = {
                     name: document.getElementById('projTitle').value.trim(),
                     description: document.getElementById('projDesc').value.trim(),
@@ -145,6 +171,7 @@ function handleFormsHooks() {
                     leader_reg: document.getElementById('projLeaderReg').value.trim(),
                     leader_uid: auth.currentUser.uid,
                     ppt_url: pptLink || null,
+                    members_reg: membersReg,
                     team_members: [auth.currentUser.uid],
                     admin_email: adminEmail,
                     admin_uid: adminId,
@@ -390,7 +417,7 @@ async function fetchActiveProjects(uid) {
                     <button class="btn btn-primary" onclick="window.location.href='project-workspace.html?id=${projectId}'">
                         Open Workspace <i class="fa-solid fa-arrow-right"></i>
                     </button>
-                    <button class="btn btn-outline">
+                    <button class="btn btn-outline" onclick="window.openProjectSettings('${projectId}', '${project.leader_uid||''}')">
                         <i class="fa-solid fa-gear"></i> Settings
                     </button>
                 </div>
@@ -403,6 +430,49 @@ async function fetchActiveProjects(uid) {
         container.innerHTML = '<div class="text-center text-danger" style="padding:10px;">Error loading projects.</div>';
     }
 }
+
+/**
+ * Handles Project Settings / Deletion logic for project leaders.
+ */
+window.openProjectSettings = async (projectId, leaderUid) => {
+    if (!auth.currentUser || auth.currentUser.uid !== leaderUid) {
+        alert("Only the Project Leader can manage or delete this project.");
+        return;
+    }
+    
+    if(confirm("Are you sure you want to permanently delete this project? This action cannot be undone.")) {
+        try {
+            // Fetch project to see if we need to revert stats
+            const projSnap = await getDoc(doc(db, "projects", projectId));
+            if(projSnap.exists()) {
+                const pData = projSnap.data();
+                if(pData.status === "completed") {
+                    const pRating = pData.project_rating || pData.rating || 0;
+                    const members = pData.team_members || [];
+                    const indRatings = pData.individual_ratings || {};
+                    
+                    // Revert stats for all members
+                    for(const uid of members) {
+                        const iRating = indRatings[uid] || pRating;
+                        await updateDoc(doc(db, "users", uid), {
+                            total_stars: increment(-iRating),
+                            project_stars: increment(-pRating),
+                            total_reviews: increment(-1),
+                            completed_projects: increment(-1)
+                        });
+                    }
+                }
+            }
+            
+            await deleteDoc(doc(db, "projects", projectId));
+            alert("Project successfully deleted.");
+            if (auth.currentUser) fetchActiveProjects(auth.currentUser.uid); // reload
+        } catch(e) {
+            console.error("Project deletion error:", e);
+            alert("Failed to delete project. Please check if you have required permissions.");
+        }
+    }
+};
 
 /**
  * Fetches pending team invites.

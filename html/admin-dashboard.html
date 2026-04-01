@@ -167,22 +167,38 @@
 
     <!-- RATING MODAL -->
     <div id="rating-modal" class="modal-overlay">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width: 480px;">
             <div class="modal-header">
                 <h3 style="color: var(--primary-blue);">Conclude Project</h3>
                 <button id="close-modal" class="close-modal">&times;</button>
             </div>
-            <p style="color: var(--muted-text); font-size: 14px; margin-bottom: 20px;">Please evaluate the team's performance (1-5 Stars). This validates their project for their student profile.</p>
+            <p style="color: var(--muted-text); font-size: 14px; margin-bottom: 20px;">Evaluate the team's performance. This validates their project for student profiles.</p>
             
-            <div class="input-group" style="margin-bottom: 25px;">
-                <label style="font-size: 14px; font-weight: 500; display: block; margin-bottom: 8px;">Overall Rating</label>
+            <!-- Project Rating Section -->
+            <div style="background: #f0f7ff; border: 1px solid #d0e4ff; border-radius: 10px; padding: 18px; margin-bottom: 18px;">
+                <label style="font-size: 14px; font-weight: 600; display: block; margin-bottom: 8px; color: var(--primary-blue);">
+                    <i class="fa-solid fa-folder-open" style="margin-right: 6px;"></i> Project Rating
+                </label>
+                <p style="font-size: 12px; color: var(--muted-text); margin-bottom: 10px;">Rate the overall project quality, innovation, and execution.</p>
                 <select id="project-rating" class="input-field" style="cursor: pointer;">
-                    <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
-                    <option value="4">⭐⭐⭐⭐ 4 Stars</option>
-                    <option value="3">⭐⭐⭐ 3 Stars</option>
-                    <option value="2">⭐⭐ 2 Stars</option>
-                    <option value="1">⭐ 1 Star</option>
+                    <option value="5">⭐⭐⭐⭐⭐ 5 Stars — Exceptional</option>
+                    <option value="4">⭐⭐⭐⭐ 4 Stars — Great</option>
+                    <option value="3">⭐⭐⭐ 3 Stars — Good</option>
+                    <option value="2">⭐⭐ 2 Stars — Average</option>
+                    <option value="1">⭐ 1 Star — Needs Improvement</option>
                 </select>
+            </div>
+
+            <!-- Individual Rating Section -->
+            <div style="background: #f0fff4; border: 1px solid #c3e6cb; border-radius: 10px; padding: 18px; margin-bottom: 20px;">
+                <label style="font-size: 14px; font-weight: 600; display: block; margin-bottom: 8px; color: #28a745;">
+                    <i class="fa-solid fa-users" style="margin-right: 6px;"></i> Individual Contribution Ratings
+                </label>
+                <p style="font-size: 12px; color: var(--muted-text); margin-bottom: 15px;">Rate the individual effort and contribution of each team member.</p>
+                
+                <div id="individual-ratings-container">
+                    <p style="font-size: 13px; color: var(--muted-text); text-align: center;"><i class="fa-solid fa-spinner fa-spin"></i> Loading team members...</p>
+                </div>
             </div>
             
             <button id="submit-completion" class="btn btn-primary" style="width: 100%;">Finalize Project</button>

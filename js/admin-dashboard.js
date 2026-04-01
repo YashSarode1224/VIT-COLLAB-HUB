@@ -15,7 +15,6 @@ const activeCount = document.getElementById('active-count');
 let currentUser = null;
 let currentProfile = null;
 
-// Modal Elements
 const ratingModal = document.getElementById('rating-modal');
 const closeModalBtn = document.getElementById('close-modal');
 const projectRating = document.getElementById('project-rating');
@@ -203,7 +202,7 @@ window.declineMentor = async (projectId) => {
     }
 };
 
-window.openCompletionModal = (projectId, teamArrayStr) => {
+window.openCompletionModal = async (projectId, teamArrayStr) => {
     completingProjectId = projectId;
     try {
         currentTeamMembers = JSON.parse(teamArrayStr);
@@ -211,6 +210,43 @@ window.openCompletionModal = (projectId, teamArrayStr) => {
         currentTeamMembers = [];
     }
     ratingModal.classList.add('active'); // using new active model overlay class
+    
+    // Load student names dynamically to render individualized rating selectors
+    const container = document.getElementById('individual-ratings-container');
+    container.innerHTML = '<p style="font-size: 13px; color: var(--muted-text); text-align: center;"><i class="fa-solid fa-spinner fa-spin"></i> Loading team members...</p>';
+    
+    let htmlBuffer = '';
+    
+    for (const uid of currentTeamMembers) {
+        let memberName = "Student";
+        try {
+            const userSnap = await getDoc(doc(db, "users", uid));
+            if (userSnap.exists() && userSnap.data().name) {
+                memberName = userSnap.data().name;
+            }
+        } catch (err) {
+            console.error(err);
+        }
+        
+        htmlBuffer += `
+            <div style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+                <label style="font-size: 13px; font-weight: 500; color: var(--dark-text); max-width: 50%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${memberName}</label>
+                <select class="input-field individual-student-rating" data-uid="${uid}" style="width: 50%; max-width: 180px; padding: 6px; font-size: 13px; cursor: pointer; height: auto;">
+                    <option value="5">⭐⭐⭐⭐⭐ 5</option>
+                    <option value="4">⭐⭐⭐⭐ 4</option>
+                    <option value="3">⭐⭐⭐ 3</option>
+                    <option value="2">⭐⭐ 2</option>
+                    <option value="1">⭐ 1</option>
+                </select>
+            </div>
+        `;
+    }
+    
+    if (htmlBuffer === '') {
+        container.innerHTML = '<p style="font-size: 13px; color: var(--danger);">No team members found.</p>';
+    } else {
+        container.innerHTML = htmlBuffer;
+    }
 };
 
 closeModalBtn.addEventListener('click', () => {
@@ -221,28 +257,40 @@ closeModalBtn.addEventListener('click', () => {
 
 submitCompletionBtn.addEventListener('click', async () => {
     if (!completingProjectId) return;
-    const ratingValue = parseInt(projectRating.value, 10);
+    const projRating = parseInt(projectRating.value, 10);
     
     submitCompletionBtn.textContent = "Processing...";
     submitCompletionBtn.disabled = true;
 
     try {
-        await updateDoc(doc(db, "projects", completingProjectId), {
-            status: "completed",
-            rating: ratingValue
+        // Collect all individual ratings
+        const selectElements = document.querySelectorAll('.individual-student-rating');
+        const individualRatingsMap = {};
+        selectElements.forEach(select => {
+            const uid = select.getAttribute('data-uid');
+            individualRatingsMap[uid] = parseInt(select.value, 10);
         });
 
-        // Updating user stars (in prod this would be tightly controlled via functions/rules)
+        await updateDoc(doc(db, "projects", completingProjectId), {
+            status: "completed",
+            project_rating: projRating,
+            individual_ratings: individualRatingsMap, // Store map of uid -> rating
+            rating: projRating // backward compatibility
+        });
+
+        // Apply individual rating to each team member's profile
         for (const uid of currentTeamMembers) {
+            const indivRating = individualRatingsMap[uid] || projRating; // default to project rating as fallback
             await updateDoc(doc(db, "users", uid), {
-                total_stars: increment(ratingValue),
+                total_stars: increment(indivRating),
+                project_stars: increment(projRating),
                 total_reviews: increment(1),
                 completed_projects: increment(1)
             });
         }
         
         ratingModal.classList.remove('active');
-        alert("Project completed successfully!");
+        alert("Project completed successfully! Ratings have been appropriately applied to all students.");
     } catch (e) {
         console.error("Failed to complete project", e);
         alert("Failed to complete project. Ensure you have network connectivity.");
