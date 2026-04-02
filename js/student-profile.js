@@ -59,6 +59,17 @@ document.addEventListener('DOMContentLoaded', () => {
         closeChatPanelBtn.addEventListener('click', () => toggleChatPanel(false));
         sideChatOverlay.addEventListener('click', () => toggleChatPanel(false));
     }
+
+    // Logout Button
+    document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        signOut(auth).then(() => {
+            window.location.href = 'login.html';
+        }).catch((err) => {
+            console.error('Logout error:', err);
+            alert('Failed to log out. Please try again.');
+        });
+    });
 });
 
 let pendingCoverFile = null;
@@ -68,9 +79,9 @@ let pendingAvatarFile = null;
 function compressImage(file, maxWidth, maxHeight, quality = 0.8) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = function(event) {
+        reader.onload = function (event) {
             const img = new Image();
-            img.onload = function() {
+            img.onload = function () {
                 const canvas = document.createElement('canvas');
                 let width = img.width;
                 let height = img.height;
@@ -109,7 +120,7 @@ function handleCoverUpload(e) {
     if (file) {
         pendingCoverFile = file;
         const reader = new FileReader();
-        reader.onload = function(event) {
+        reader.onload = function (event) {
             const imgUrl = event.target.result;
             document.getElementById('profileCover').style.backgroundImage = `linear-gradient(135deg, rgba(13,110,253,0.7) 0%, rgba(10,25,47,0.8) 100%), url('${imgUrl}')`;
         }
@@ -122,7 +133,7 @@ function handleAvatarUpload(e) {
     if (file) {
         pendingAvatarFile = file;
         const reader = new FileReader();
-        reader.onload = function(event) {
+        reader.onload = function (event) {
             document.getElementById('profile-avatar').src = event.target.result;
             if (document.getElementById('nav-avatar')) {
                 document.getElementById('nav-avatar').src = event.target.result;
@@ -134,6 +145,7 @@ function handleAvatarUpload(e) {
 
 // A local state copy of skills as a "Map" mock ({ "react": true, "node": true })
 let userSkillsMap = {};
+let userTop3Skills = []; // User-selected top 3 skills
 
 /**
  * Initialize Profile Data from Backend
@@ -154,7 +166,9 @@ async function initProfile(user) {
             total_stars: 0,
             total_reviews: 0,
             avatar_url: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-            github: ""
+            github: "",
+            linkedin: "",
+            top3_skills: []
         };
 
         if (docSnap.exists()) {
@@ -162,8 +176,8 @@ async function initProfile(user) {
         }
 
         // 1. Math Calculation on read
-        let avgRating = (userData.total_reviews > 0) 
-            ? (userData.total_stars / userData.total_reviews).toFixed(1) 
+        let avgRating = (userData.total_reviews > 0)
+            ? (userData.total_stars / userData.total_reviews).toFixed(1)
             : "No Ratings";
 
         // 2. Populate UI Headers
@@ -175,11 +189,11 @@ async function initProfile(user) {
         }
         document.getElementById('display-branch').innerHTML = `<i class="fa-solid fa-graduation-cap"></i> ${userData.branch || 'Add Branch'}`;
         document.getElementById('display-rating').innerHTML = `<i class="fa-solid fa-star"></i> ${avgRating} / 5.0 Rating`;
-        
+
         if (userData.cover_url) {
             document.getElementById('profileCover').style.backgroundImage = `linear-gradient(135deg, rgba(13,110,253,0.7) 0%, rgba(10,25,47,0.8) 100%), url('${userData.cover_url}')`;
         }
-        
+
         // Stats
         document.getElementById('stat-completed').textContent = userData.completed_projects;
         document.getElementById('stat-reviews').textContent = userData.total_reviews;
@@ -194,12 +208,21 @@ async function initProfile(user) {
         if (document.getElementById('input-github')) {
             document.getElementById('input-github').value = userData.github || '';
         }
+        if (document.getElementById('input-linkedin')) {
+            document.getElementById('input-linkedin').value = userData.linkedin || '';
+        }
 
         // Populate Skills Map
         if (userData.skills) {
             userSkillsMap = userData.skills;
-            renderSkillTags();
         }
+
+        // Load user-selected Top 3 Skills
+        if (Array.isArray(userData.top3_skills)) {
+            userTop3Skills = userData.top3_skills;
+        }
+
+        renderSkillTags();
 
     } catch (e) {
         console.error("Failed to load profile", e);
@@ -212,7 +235,7 @@ async function initProfile(user) {
 async function handleProfileSave(e, user) {
     e.preventDefault();
     if (!user) return;
-    
+
     // Grab button to show loading state
     const btn = document.getElementById('saveProfileBtn');
     const originalText = btn.innerHTML;
@@ -227,7 +250,9 @@ async function handleProfileSave(e, user) {
         block: document.getElementById('input-block').value.trim(),
         email: document.getElementById('input-email').value.trim(),
         github: document.getElementById('input-github') ? document.getElementById('input-github').value.trim() : '',
+        linkedin: document.getElementById('input-linkedin') ? document.getElementById('input-linkedin').value.trim() : '',
         skills: userSkillsMap,
+        top3_skills: userTop3Skills,
         role: "student" // Important! Dashboards rely on this role definition
     };
 
@@ -619,7 +644,7 @@ function hideAutocomplete() {
  */
 function renderSkillTags() {
     const container = document.getElementById('skillTagsContainer');
-    
+
     // Clear old tags (but keep the input box and autocomplete dropdown)
     document.querySelectorAll('.skill-tag').forEach(el => el.remove());
 
@@ -631,16 +656,82 @@ function renderSkillTags() {
         if (userSkillsMap[skill] === true) {
             const tag = document.createElement('span');
             tag.className = 'skill-tag';
-            tag.innerHTML = `${skill} <i class="fa-solid fa-xmark" aria-hidden="true"></i>`;
-            
-            // Allow deletion
-            tag.querySelector('i').addEventListener('click', () => {
+            const isTop = userTop3Skills.includes(skill);
+            tag.innerHTML = `${isTop ? '<i class="fa-solid fa-star" style="font-size: 10px; color: #f59e0b; margin-right: 3px;"></i>' : ''}${skill} <i class="fa-solid fa-xmark" aria-hidden="true"></i>`;
+            if (isTop) {
+                tag.style.background = 'rgba(245,158,11,0.15)';
+                tag.style.border = '1px solid rgba(245,158,11,0.4)';
+            }
+            tag.style.cursor = 'pointer';
+
+            // Click tag to toggle top 3 selection
+            tag.addEventListener('click', (e) => {
+                // Don't toggle if clicking the X delete button
+                if (e.target.classList.contains('fa-xmark')) return;
+                toggleTop3Skill(skill);
+            });
+
+            // Allow deletion via X icon
+            tag.querySelector('.fa-xmark').addEventListener('click', (e) => {
+                e.stopPropagation();
                 delete userSkillsMap[skill];
+                // Also remove from top 3 if present
+                userTop3Skills = userTop3Skills.filter(s => s !== skill);
                 renderSkillTags();
             });
 
             container.insertBefore(tag, inputNode);
         }
     });
+
+    // Update Top 3 Skills display
+    updateTop3Display();
 }
 
+/**
+ * Toggle a skill in/out of the top 3 selection
+ */
+function toggleTop3Skill(skill) {
+    const idx = userTop3Skills.indexOf(skill);
+    if (idx >= 0) {
+        // Remove from top 3
+        userTop3Skills.splice(idx, 1);
+    } else {
+        // Add to top 3 (max 3)
+        if (userTop3Skills.length >= 3) {
+            alert('You can select at most 3 top skills. Remove one first.');
+            return;
+        }
+        userTop3Skills.push(skill);
+    }
+    renderSkillTags();
+}
+
+/**
+ * Update the Top 3 Technical Skills display
+ */
+function updateTop3Display() {
+    const display = document.getElementById('top3SkillsDisplay');
+    if (!display) return;
+
+    if (userTop3Skills.length === 0) {
+        display.innerHTML = '<span class="text-muted" style="font-size: 0.85rem;">Click a skill above to mark it as a top skill.</span>';
+        return;
+    }
+
+    display.innerHTML = userTop3Skills.map(skill =>
+        `<span style="background: rgba(245,158,11,0.1); color: #b45309; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid rgba(245,158,11,0.2); cursor: pointer; transition: opacity 0.2s;"
+              onclick="document.dispatchEvent(new CustomEvent('removeTop3', {detail: '${skill}'}))"
+              onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
+            <i class="fa-solid fa-star" style="font-size: 10px; margin-right: 4px;"></i>${skill}
+            <i class="fa-solid fa-xmark" style="font-size: 10px; margin-left: 6px; opacity: 0.6;"></i>
+        </span>`
+    ).join('');
+}
+
+// Listen for remove top 3 events from the display pills
+document.addEventListener('removeTop3', (e) => {
+    const skill = e.detail;
+    userTop3Skills = userTop3Skills.filter(s => s !== skill);
+    renderSkillTags();
+});

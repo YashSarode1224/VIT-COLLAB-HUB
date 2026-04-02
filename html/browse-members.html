@@ -308,36 +308,36 @@
                 <div class="modal-role" id="modalRole"><i class="fa-solid fa-code"></i> Role</div>
                 <div class="modal-branch"><i class="fa-solid fa-graduation-cap"></i> <span id="modalBranch">Branch</span></div>
                 
-                <div class="modal-stats">
-                    <div class="modal-stat">
-                        <span class="stat-val" id="modalRating">4.0</span>
-                        <span class="stat-label">Rating</span>
-                    </div>
-                    <div class="modal-stat">
-                        <span class="stat-val">12</span>
-                        <span class="stat-label">Projects</span>
-                    </div>
-                    <div class="modal-stat">
-                        <span class="stat-val">Active</span>
-                        <span class="stat-label">Status</span>
+                <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+                    <div style="background: rgba(245, 158, 11, 0.1); color: #b45309; padding: 8px 20px; border-radius: 12px; font-weight: 700; font-size: 0.95rem; border: 1px solid rgba(245, 158, 11, 0.2);">
+                        <i class="fa-solid fa-star" style="color: #f59e0b; margin-right: 6px;"></i><span id="modalRating">New</span> / 5.0 Rating
                     </div>
                 </div>
 
                 <div style="text-align: left; margin-bottom: 25px;">
-                    <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 10px;">All Technical Skills</h3>
-                    <div class="member-skills" id="modalSkills" style="justify-content: flex-start;">
-                        <!-- All Skills injected here -->
-                    </div>
-                    
-                    <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 10px; margin-top: 15px;">Top 3 Technical Skills</h3>
+                    <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 10px;">
+                        <i class="fa-solid fa-trophy" style="color: #f59e0b; margin-right: 6px;"></i>Top 3 Technical Skills
+                    </h3>
                     <div class="member-skills" id="modalTopSkills" style="justify-content: flex-start;">
                         <!-- Top 3 Skills injected here -->
                     </div>
+
+                    <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 10px; margin-top: 20px;">
+                        <i class="fa-solid fa-link" style="color: var(--primary-blue); margin-right: 6px;"></i>Profiles & Links
+                    </h3>
+                    <div id="modalLinks" style="display: flex; gap: 12px; flex-wrap: wrap;">
+                        <!-- GitHub / LinkedIn links injected here -->
+                    </div>
                 </div>
 
-                <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="alert('Connection request sent!')">
-                    <i class="fa-solid fa-user-plus"></i> Connect
-                </button>
+                <div style="display: flex; gap: 10px; margin-top: 5px;">
+                    <button class="btn btn-primary" style="flex: 1; justify-content: center;" onclick="alert('Messaging feature coming soon!')">
+                        <i class="fa-solid fa-message"></i> Message
+                    </button>
+                    <button class="btn btn-outline" id="viewFullProfileBtn" style="flex: 1; justify-content: center; font-weight: 600;" onclick="">
+                        <i class="fa-solid fa-user"></i> View Full Profile
+                    </button>
+                </div>
             </div>
         </div>
     </div>

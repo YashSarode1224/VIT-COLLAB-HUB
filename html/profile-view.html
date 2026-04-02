@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - VIT Collab Hub</title>
+    <meta name="description" content="View student profile on VIT Collab Hub — skills, achievements, projects and more.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/global.css">
+
+    <style>
+        :root {
+            --primary-blue: #0d6efd;
+            --primary-gradient: linear-gradient(135deg, #0d6efd 0%, #0a1b3f 100%);
+            --card-bg: #ffffff;
+            --bg-color: #f4f6fa;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --gold: #f59e0b;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background: var(--bg-color);
+            min-height: 100vh;
+        }
+
+        /* ──── LOADING STATE ──── */
+        .profile-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            gap: 20px;
+        }
+        .profile-loading .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ──── ERROR STATE ──── */
+        .profile-error {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            gap: 15px;
+            text-align: center;
+            padding: 20px;
+        }
+        .profile-error i {
+            font-size: 4rem;
+            color: #cbd5e1;
+        }
+        .profile-error h2 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+        }
+        .profile-error p {
+            color: var(--text-secondary);
+            max-width: 400px;
+        }
+
+        /* ──── BACK BUTTON ──── */
+        .back-bar {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px 20px 0;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        .back-btn:hover {
+            background: var(--primary-blue);
+            color: #fff;
+            border-color: var(--primary-blue);
+            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+        }
+
+        /* ──── PROFILE HERO ──── */
+        .profile-hero {
+            max-width: 960px;
+            margin: 20px auto 0;
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border-color);
+        }
+        .hero-cover {
+            height: 180px;
+            background: var(--primary-gradient);
+            position: relative;
+        }
+        .hero-cover::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.15));
+        }
+        .hero-body {
+            padding: 0 40px 35px;
+            position: relative;
+        }
+        .hero-avatar-wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: -55px;
+            margin-bottom: 20px;
+        }
+        .hero-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 5px solid var(--card-bg);
+            object-fit: cover;
+            background: #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        }
+        .hero-actions {
+            display: flex;
+            gap: 10px;
+            padding-bottom: 10px;
+        }
+        .hero-actions .btn {
+            padding: 9px 22px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            border: none;
+        }
+        .btn-msg {
+            background: var(--primary-blue);
+            color: #fff;
+        }
+        .btn-msg:hover {
+            background: #0b5ed7;
+            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.35);
+        }
+        .btn-share {
+            background: #f1f5f9;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color) !important;
+        }
+        .btn-share:hover {
+            background: #e2e8f0;
+        }
+        .hero-name {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            line-height: 1.2;
+        }
+        .hero-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 16px;
+        }
+        .hero-subtitle span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .hero-subtitle i {
+            color: var(--primary-blue);
+            font-size: 0.9rem;
+        }
+
+        /* ──── STATS ROW ──── */
+        .stats-row {
+            max-width: 960px;
+            margin: 20px auto 0;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            padding: 0 20px;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 22px 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 1.2rem;
+        }
+        .stat-val {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        .stat-label {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ──── CONTENT GRID ──── */
+        .content-grid {
+            max-width: 960px;
+            margin: 20px auto 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 0 20px;
+        }
+        .content-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border: 1px solid var(--border-color);
+        }
+        .content-card.full-width {
+            grid-column: 1 / -1;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+        .card-header-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        .card-header h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* ──── SKILLS ──── */
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .skill-chip {
+            background: rgba(13, 110, 253, 0.08);
+            color: #0b5ed7;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            transition: var(--transition);
+            border: 1px solid rgba(13, 110, 253, 0.12);
+        }
+        .skill-chip:hover {
+            background: var(--primary-blue);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+        .skill-chip.top {
+            background: rgba(245, 158, 11, 0.1);
+            color: #b45309;
+            border-color: rgba(245, 158, 11, 0.2);
+        }
+        .skill-chip.top:hover {
+            background: #f59e0b;
+            color: #fff;
+        }
+        .empty-state {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            font-style: italic;
+            padding: 10px 0;
+        }
+
+        /* ──── LINKS ──── */
+        .links-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+        .link-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        }
+        .link-github {
+            background: #24292e;
+            color: #fff;
+            border-color: #24292e;
+        }
+        .link-linkedin {
+            background: #0a66c2;
+            color: #fff;
+            border-color: #0a66c2;
+        }
+
+        /* ──── PROJECTS LIST ──── */
+        .project-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .project-item:last-child {
+            border-bottom: none;
+        }
+        .project-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .project-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .project-dot.completed { background: var(--success); }
+        .project-dot.ongoing { background: var(--primary-blue); }
+        .project-dot.pending { background: var(--gold); }
+        .project-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .project-meta {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .project-badge {
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .badge-completed {
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
+        }
+        .badge-ongoing {
+            background: rgba(13, 110, 253, 0.1);
+            color: var(--primary-blue);
+        }
+        .badge-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: #b45309;
+        }
+
+        /* ──── HACKATHONS WON SECTION ──── */
+        .hack-won-card {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        .hack-won-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .hack-won-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .hack-won-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .hack-medal {
+            font-size: 1.6rem;
+            line-height: 1;
+        }
+        .hack-won-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .hack-won-meta {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        .hack-expand-icon {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            transition: transform 0.3s ease;
+        }
+        .hack-won-card.expanded .hack-expand-icon {
+            transform: rotate(180deg);
+        }
+        .hack-won-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.3s ease;
+            padding: 0 20px;
+        }
+        .hack-won-card.expanded .hack-won-details {
+            max-height: 500px;
+            padding: 0 20px 20px;
+        }
+        .hack-won-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 16px;
+            padding-top: 4px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+        }
+        .hack-team-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .hack-team-title i {
+            color: var(--primary-blue);
+        }
+        .hack-members-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .hack-member-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #f1f5f9;
+        }
+        .hack-member-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .hack-member-name {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .hack-member-reg {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        .leader-tag {
+            display: inline-block;
+            background: rgba(245, 158, 11, 0.12);
+            color: #b45309;
+            padding: 1px 8px;
+            border-radius: 6px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+        .hack-member-link {
+            color: var(--primary-blue);
+            font-size: 0.85rem;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        .hack-member-link:hover {
+            background: rgba(13, 110, 253, 0.08);
+        }
+        .hack-won-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(139, 92, 246, 0.1);
+            color: #8b5cf6;
+            min-width: 24px;
+            height: 24px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 0 6px;
+            margin-left: 8px;
+        }
+
+        /* ──── RESPONSIVE ──── */
+        @media (max-width: 768px) {
+            .hero-body { padding: 0 20px 25px; }
+            .hero-avatar { width: 90px; height: 90px; margin-top: -45px; }
+            .hero-avatar-wrap { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .hero-name { font-size: 1.4rem; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .content-grid { grid-template-columns: 1fr; }
+            .hero-actions { width: 100%; }
+            .hero-actions .btn { flex: 1; justify-content: center; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-cover { height: 130px; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .stat-card { padding: 16px 12px; }
+            .stat-val { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Loading State -->
+    <div class="profile-loading" id="profileLoading">
+        <div class="spinner"></div>
+        <p style="color: var(--text-secondary); font-weight: 500;">Loading profile...</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="profile-error" id="profileError">
+        <i class="fa-solid fa-user-slash"></i>
+        <h2>Profile Not Found</h2>
+        <p>The user you're looking for doesn't exist or the link may be broken.</p>
+        <a href="browse-members.html" class="back-btn" style="margin-top: 10px;">
+            <i class="fa-solid fa-arrow-left"></i> Browse Members
+        </a>
+    </div>
+
+    <!-- Main Profile Content (hidden until data loads) -->
+    <div id="profileContent" style="display: none;">
+
+        <!-- Back Bar -->
+        <div class="back-bar">
+            <a href="browse-members.html" class="back-btn" id="backBtn">
+                <i class="fa-solid fa-arrow-left"></i> Back to Members
+            </a>
+        </div>
+
+        <!-- Hero Section -->
+        <div class="profile-hero">
+            <div class="hero-cover" id="heroCover"></div>
+            <div class="hero-body">
+                <div class="hero-avatar-wrap">
+                    <img src="" alt="User Avatar" class="hero-avatar" id="heroAvatar">
+                    <div class="hero-actions">
+                        <button class="btn btn-msg" id="btnMessage">
+                            <i class="fa-solid fa-message"></i> Message
+                        </button>
+                        <button class="btn btn-share" id="btnShare">
+                            <i class="fa-solid fa-share-nodes"></i> Share
+                        </button>
+                    </div>
+                </div>
+                <h1 class="hero-name" id="heroName">—</h1>
+                <div class="hero-subtitle">
+                    <span id="heroBranch"><i class="fa-solid fa-graduation-cap"></i> —</span>
+                    <span id="heroRegNo"><i class="fa-solid fa-id-card"></i> —</span>
+                    <span id="heroRating"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> —</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <div class="stat-val" id="statRating">—</div>
+                <div class="stat-label">Avg Rating</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(34, 197, 94, 0.1); color: #22c55e;">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div class="stat-val" id="statCompleted">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(13, 110, 253, 0.1); color: var(--primary-blue);">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+                <div class="stat-val" id="statTotalProjects">0</div>
+                <div class="stat-label">Total Projects</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <div class="stat-val" id="statHackathons">0</div>
+                <div class="stat-label">Participated</div>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+
+            <!-- All Skills -->
+            <div class="content-card">
+                <div class="card-header">
+                    <div class="card-header-icon" style="background: rgba(13, 110, 253, 0.1); color: var(--primary-blue);">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                    <h3>All Skills</h3>
+                </div>
+                <div class="skills-grid" id="allSkillsContainer">
+                    <span class="empty-state">No skills added yet.</span>
+                </div>
+            </div>
+
+            <!-- Links & Profiles -->
+            <div class="content-card">
+                <div class="card-header">
+                    <div class="card-header-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                        <i class="fa-solid fa-link"></i>
+                    </div>
+                    <h3>Profiles & Links</h3>
+                </div>
+                <div class="links-list" id="linksContainer">
+                    <span class="empty-state">No profile links available.</span>
+                </div>
+            </div>
+
+            <!-- Project History -->
+            <div class="content-card full-width">
+                <div class="card-header">
+                    <div class="card-header-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                    <h3>Project History</h3>
+                </div>
+                <div id="projectsContainer">
+                    <span class="empty-state">No project history yet.</span>
+                </div>
+            </div>
+
+            <!-- Hackathons Won -->
+            <div class="content-card full-width">
+                <div class="card-header">
+                    <div class="card-header-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h3>Hackathons Won <span class="hack-won-count" id="hackWonCount">0</span></h3>
+                </div>
+                <div id="hackathonsWonContainer">
+                    <span class="empty-state">No hackathons won yet. Keep participating!</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="module" src="../js/profile-view.js"></script>
+</body>
+
+</html>

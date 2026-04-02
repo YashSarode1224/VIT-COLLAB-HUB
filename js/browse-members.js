@@ -23,7 +23,7 @@ onAuthStateChanged(auth, async (user) => {
             const navUserName = document.getElementById('nav-user-name');
             if (navUserName) navUserName.textContent = firstName;
         }
-    } catch(e) { console.error("Error fetching user data", e); }
+    } catch (e) { console.error("Error fetching user data", e); }
 
     fetchMembers();
 });
@@ -74,7 +74,7 @@ function initSharedUI() {
 
 async function fetchMembers() {
     const grid = document.getElementById('membersGrid');
-    
+
     try {
         const usersRef = collection(db, "users");
         // We want all students except the current user (if they are a student)
@@ -109,14 +109,18 @@ function renderMembersList(members) {
     members.forEach(member => {
         const name = member.name || "Student";
         const branch = member.branch || "Branch TBD";
-        const role = member.position || "Developer";
-        const rating = member.rating || "New";
         const avatar = member.avatar_url || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
-        
-        const skillsArray = Array.isArray(member.skills) ? member.skills : [];
-        const top3Skills = skillsArray.slice(0, 3);
+
+        // Compute rating from Firestore fields
+        const rating = (member.total_reviews > 0)
+            ? (member.total_stars / member.total_reviews).toFixed(1)
+            : "New";
+
+        // Use user-selected top3_skills if available, else fallback
+        const top3Skills = Array.isArray(member.top3_skills) && member.top3_skills.length > 0
+            ? member.top3_skills
+            : (Array.isArray(member.skills) ? member.skills.slice(0, 3) : []);
         const pillsHTML = top3Skills.map(s => `<span class="skill-pill">${s}</span>`).join('');
-        const extraPills = skillsArray.length > 3 ? `<span class="skill-pill" style="background:transparent; border:1px solid var(--primary-blue);">+${skillsArray.length - 3}</span>` : '';
 
         const card = document.createElement('div');
         card.className = 'member-card';
@@ -125,15 +129,14 @@ function renderMembersList(members) {
             <img src="${avatar}" alt="${name}" class="member-avatar">
             <h3 class="member-name">${name}</h3>
             <div class="member-role"><i class="fa-solid fa-graduation-cap"></i> ${branch}</div>
-            <div class="member-role" style="font-weight: 600; color: var(--primary-blue);"><i class="fa-solid fa-code"></i> ${role}</div>
             
             <div class="member-skills">
-                ${pillsHTML} ${extraPills}
+                ${pillsHTML}
             </div>
 
             <div class="member-actions">
                 <button class="btn btn-outline btn-sm" style="flex: 1;" onclick="window.viewMemberProfile('${member.id}')">View Profile</button>
-                <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="alert('Connect request feature coming soon!')">Connect</button>
+                <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="alert('Messaging feature coming soon!')"><i class="fa-solid fa-message" style="margin-right: 4px;"></i>Message</button>
             </div>
         `;
         grid.appendChild(card);
@@ -159,24 +162,53 @@ const closeBtn = document.getElementById('closeProfileModalBtn');
 
 window.viewMemberProfile = (userId) => {
     const mem = cachedMembers.find(m => m.id === userId);
-    if(!mem) return;
-    
+    if (!mem) return;
+
     document.getElementById('modalAvatar').src = mem.avatar_url || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
     document.getElementById('modalName').textContent = mem.name || "Student";
-    document.getElementById('modalRole').innerHTML = `<i class="fa-solid fa-code"></i> ${mem.position || "Developer"}`;
+    document.getElementById('modalRole').innerHTML = `<i class="fa-solid fa-graduation-cap"></i> ${mem.branch || 'Student'}`;
     document.getElementById('modalBranch').textContent = mem.branch || "Branch TBD";
-    document.getElementById('modalRating').textContent = mem.rating || "New";
-    
-    const skillsArray = Array.isArray(mem.skills) ? mem.skills : [];
-    const top3Skills = skillsArray.slice(0, 3);
-    
+
+    // Compute and show rating
+    const rating = (mem.total_reviews > 0)
+        ? (mem.total_stars / mem.total_reviews).toFixed(1)
+        : "New";
+    document.getElementById('modalRating').textContent = rating;
+
+    // Use user-selected top3_skills if available
+    const top3Skills = Array.isArray(mem.top3_skills) && mem.top3_skills.length > 0
+        ? mem.top3_skills
+        : (Array.isArray(mem.skills) ? mem.skills.slice(0, 3) : []);
+
     const topPillsHTML = top3Skills.map(skill => `<span class="skill-pill">${skill}</span>`).join('');
     document.getElementById('modalTopSkills').innerHTML = topPillsHTML || '<span class="text-muted" style="font-size:0.8rem;">No top skills</span>';
 
-    const allPillsHTML = skillsArray.map(skill => `<span class="skill-pill">${skill}</span>`).join('');
-    document.getElementById('modalSkills').innerHTML = allPillsHTML || '<span class="text-muted" style="font-size:0.8rem;">No specified skills</span>';
+    // Render GitHub / LinkedIn links
+    const linksContainer = document.getElementById('modalLinks');
+    let linksHTML = '';
+    if (mem.github) {
+        linksHTML += `<a href="${mem.github}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background: #24292e; color: white; border-radius: 10px; text-decoration: none; font-size: 13px; font-weight: 600; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+            <i class="fa-brands fa-github" style="font-size: 16px;"></i> GitHub
+        </a>`;
+    }
+    if (mem.linkedin) {
+        linksHTML += `<a href="${mem.linkedin}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background: #0a66c2; color: white; border-radius: 10px; text-decoration: none; font-size: 13px; font-weight: 600; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+            <i class="fa-brands fa-linkedin" style="font-size: 16px;"></i> LinkedIn
+        </a>`;
+    }
+    if (!linksHTML) {
+        linksHTML = '<span class="text-muted" style="font-size: 0.8rem;">No profile links available</span>';
+    }
+    linksContainer.innerHTML = linksHTML;
 
-    
+    // Set View Full Profile link
+    const viewFullBtn = document.getElementById('viewFullProfileBtn');
+    if (viewFullBtn) {
+        viewFullBtn.onclick = () => {
+            window.location.href = `profile-view.html?uid=${userId}`;
+        };
+    }
+
     profileOverlay.style.display = 'flex';
 };
 
@@ -185,5 +217,5 @@ closeBtn.addEventListener('click', () => {
 });
 
 profileOverlay.addEventListener('click', (e) => {
-    if(e.target === profileOverlay) profileOverlay.style.display = 'none';
+    if (e.target === profileOverlay) profileOverlay.style.display = 'none';
 });

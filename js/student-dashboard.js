@@ -349,7 +349,6 @@ async function fetchActiveProjects(uid) {
             container.innerHTML = `
                 <div class="card" style="text-align:center; padding: 40px;">
                     <h3 class="text-muted">No active projects yet.</h3>
-                    <button class="btn btn-outline" style="margin-top: 15px;" onclick="window.location.href='browse-members.html'">Join a project</button>
                 </div>
             `;
             return;
