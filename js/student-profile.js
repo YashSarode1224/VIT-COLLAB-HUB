@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event Listeners for UI
     document.getElementById('profileForm').addEventListener('submit', (e) => handleProfileSave(e, auth.currentUser));
     document.getElementById('skillInput')?.addEventListener('keydown', handleSkillTagEvent);
+    initSkillAutocomplete();
 
     // Media Upload Listeners
     document.getElementById('coverUploadInput').addEventListener('change', handleCoverUpload);
@@ -271,20 +272,346 @@ async function handleProfileSave(e, user) {
 }
 
 /**
- * Handle keyboard input for skills (Enter & Comma)
+ * ─────────────────────────────────────────────
+ * COMPREHENSIVE SKILLS DATABASE (LinkedIn-style)
+ * ─────────────────────────────────────────────
+ */
+const SKILLS_DATABASE = {
+    "Languages": [
+        "HTML", "HTML5", "CSS", "CSS3", "JavaScript", "TypeScript", "Python", "Java", "C", "C++",
+        "C#", "Go", "Golang", "Rust", "Ruby", "PHP", "Swift", "Kotlin", "Dart", "Scala",
+        "Perl", "R", "MATLAB", "Lua", "Haskell", "Elixir", "Erlang", "Clojure", "Julia",
+        "Shell Scripting", "Bash", "PowerShell", "Assembly", "VHDL", "Verilog", "SQL", "PL/SQL",
+        "Objective-C", "Groovy", "F#", "COBOL", "Fortran", "Solidity"
+    ],
+    "Frontend": [
+        "React", "React.js", "React Native", "Next.js", "Vue.js", "Vue 3", "Nuxt.js",
+        "Angular", "AngularJS", "Svelte", "SvelteKit", "Ember.js", "Gatsby", "Astro",
+        "jQuery", "Bootstrap", "Tailwind CSS", "Material UI", "Chakra UI", "Ant Design",
+        "Sass", "SCSS", "Less", "Styled Components", "CSS Modules", "PostCSS",
+        "Webpack", "Vite", "Parcel", "Rollup", "Babel", "ESLint", "Prettier",
+        "Redux", "Zustand", "MobX", "Recoil", "Pinia", "Vuex",
+        "Three.js", "D3.js", "Chart.js", "Framer Motion", "GSAP", "Lottie",
+        "Storybook", "Figma", "Adobe XD", "Sketch", "Responsive Design", "PWA",
+        "Web Accessibility", "SEO", "Web Performance", "Web Components"
+    ],
+    "Backend": [
+        "Node.js", "Express.js", "NestJS", "Fastify", "Koa", "Hapi",
+        "Django", "Flask", "FastAPI", "Tornado", "Pyramid",
+        "Spring Boot", "Spring Framework", "Hibernate", "JPA",
+        "Ruby on Rails", "Sinatra", "Laravel", "Symfony", "CodeIgniter",
+        "ASP.NET", "ASP.NET Core", ".NET", "Entity Framework",
+        "GraphQL", "Apollo", "REST API", "WebSocket", "gRPC", "tRPC",
+        "Microservices", "Serverless", "OAuth", "JWT", "API Design",
+        "Nginx", "Apache", "Caddy", "Load Balancing"
+    ],
+    "Database": [
+        "MySQL", "PostgreSQL", "MongoDB", "SQLite", "MariaDB", "Oracle DB",
+        "Microsoft SQL Server", "Redis", "Memcached", "Cassandra", "CouchDB",
+        "DynamoDB", "Firebase Firestore", "Firebase Realtime Database",
+        "Supabase", "PlanetScale", "Neo4j", "InfluxDB", "Elasticsearch",
+        "Prisma", "Sequelize", "Mongoose", "TypeORM", "Drizzle",
+        "Database Design", "Data Modeling", "SQL Optimization"
+    ],
+    "Cloud & DevOps": [
+        "AWS", "Amazon Web Services", "Azure", "Google Cloud Platform", "GCP",
+        "Firebase", "Heroku", "Vercel", "Netlify", "DigitalOcean", "Cloudflare",
+        "Docker", "Kubernetes", "Terraform", "Ansible", "Jenkins", "GitHub Actions",
+        "CI/CD", "GitLab CI", "CircleCI", "Travis CI", "ArgoCD",
+        "Linux", "Ubuntu", "CentOS", "DevOps", "SRE", "Infrastructure as Code",
+        "Prometheus", "Grafana", "ELK Stack", "Datadog", "New Relic",
+        "AWS Lambda", "AWS EC2", "AWS S3", "Azure Functions", "Cloud Functions"
+    ],
+    "Mobile": [
+        "Android Development", "iOS Development", "Flutter", "React Native",
+        "SwiftUI", "Jetpack Compose", "Xamarin", "Ionic", "Capacitor",
+        "Expo", "Mobile UI/UX", "App Store Optimization", "Push Notifications",
+        "ARKit", "ARCore", "Core Data", "Room Database", "Retrofit"
+    ],
+    "AI & ML": [
+        "Machine Learning", "Deep Learning", "Artificial Intelligence", "Neural Networks",
+        "TensorFlow", "PyTorch", "Keras", "Scikit-learn", "OpenCV",
+        "Natural Language Processing", "NLP", "Computer Vision", "Reinforcement Learning",
+        "Generative AI", "LLM", "GPT", "BERT", "Transformer Models",
+        "Pandas", "NumPy", "SciPy", "Matplotlib", "Seaborn", "Plotly",
+        "Hugging Face", "LangChain", "RAG", "Prompt Engineering",
+        "Data Science", "Data Analysis", "Feature Engineering", "Model Deployment",
+        "MLOps", "Jupyter Notebook", "Google Colab", "Kaggle"
+    ],
+    "Cybersecurity": [
+        "Cybersecurity", "Ethical Hacking", "Penetration Testing", "Network Security",
+        "OWASP", "Cryptography", "Encryption", "SSL/TLS", "Firewalls",
+        "Vulnerability Assessment", "Security Auditing", "SIEM", "SOC",
+        "Malware Analysis", "Reverse Engineering", "Bug Bounty",
+        "Information Security", "Identity Management", "Zero Trust"
+    ],
+    "Blockchain & Web3": [
+        "Blockchain", "Ethereum", "Solidity", "Smart Contracts", "Web3.js",
+        "Ethers.js", "Hardhat", "Truffle", "IPFS", "DeFi",
+        "NFT", "Cryptocurrency", "Hyperledger", "Polygon", "Solana",
+        "Consensus Algorithms", "Tokenization", "DAO", "Metaverse"
+    ],
+    "Tools & Platforms": [
+        "Git", "GitHub", "GitLab", "Bitbucket", "SVN",
+        "VS Code", "IntelliJ IDEA", "Eclipse", "Android Studio", "Xcode",
+        "Postman", "Insomnia", "Swagger", "Jira", "Trello", "Notion",
+        "Slack", "Microsoft Teams", "Confluence", "Figma",
+        "Linux CLI", "Vim", "Emacs", "Terminal", "WSL"
+    ],
+    "Data Engineering": [
+        "Apache Spark", "Apache Kafka", "Apache Airflow", "Apache Flink",
+        "Hadoop", "MapReduce", "Hive", "Pig", "ETL",
+        "Data Warehousing", "Data Pipelines", "Data Lake", "Big Data",
+        "Snowflake", "Databricks", "dbt", "Apache Beam"
+    ],
+    "Testing & QA": [
+        "Unit Testing", "Integration Testing", "End-to-End Testing",
+        "Jest", "Mocha", "Chai", "Cypress", "Selenium", "Playwright",
+        "JUnit", "TestNG", "pytest", "Robot Framework",
+        "Test Driven Development", "TDD", "BDD", "Load Testing",
+        "Performance Testing", "API Testing", "Manual Testing", "QA Automation"
+    ],
+    "Design & UX": [
+        "UI Design", "UX Design", "UI/UX", "User Research", "Wireframing",
+        "Prototyping", "Design Thinking", "Figma", "Adobe XD", "Sketch",
+        "Adobe Photoshop", "Adobe Illustrator", "Adobe After Effects",
+        "Canva", "Blender", "3D Modeling", "Motion Graphics",
+        "Typography", "Color Theory", "Interaction Design", "Design Systems"
+    ],
+    "Soft Skills": [
+        "Problem Solving", "Critical Thinking", "Communication", "Teamwork",
+        "Leadership", "Time Management", "Agile", "Scrum", "Kanban",
+        "Project Management", "Public Speaking", "Technical Writing",
+        "Mentoring", "Collaboration", "Adaptability", "Creativity"
+    ],
+    "IoT & Embedded": [
+        "IoT", "Internet of Things", "Arduino", "Raspberry Pi", "ESP32", "ESP8266",
+        "Embedded Systems", "Embedded C", "RTOS", "Microcontrollers",
+        "Sensor Integration", "MQTT", "Zigbee", "LoRa", "BLE",
+        "PCB Design", "Circuit Design", "Signal Processing", "Robotics",
+        "ROS", "Drone Programming", "PLC Programming"
+    ]
+};
+
+// Flatten the skills database for quick searching
+const ALL_SKILLS = [];
+for (const [category, skills] of Object.entries(SKILLS_DATABASE)) {
+    for (const skill of skills) {
+        ALL_SKILLS.push({ name: skill, category });
+    }
+}
+
+// Category color map for icons
+const CATEGORY_COLORS = {
+    "Languages": "#e11d48",
+    "Frontend": "#2563eb",
+    "Backend": "#16a34a",
+    "Database": "#d97706",
+    "Cloud & DevOps": "#7c3aed",
+    "Mobile": "#06b6d4",
+    "AI & ML": "#ec4899",
+    "Cybersecurity": "#dc2626",
+    "Blockchain & Web3": "#8b5cf6",
+    "Tools & Platforms": "#64748b",
+    "Data Engineering": "#0891b2",
+    "Testing & QA": "#65a30d",
+    "Design & UX": "#f43f5e",
+    "Soft Skills": "#0ea5e9",
+    "IoT & Embedded": "#059669"
+};
+
+let acHighlightIndex = -1;
+let acFilteredItems = [];
+
+/**
+ * Handle keyboard input for skills (Enter, Comma, Arrow Keys)
  */
 function handleSkillTagEvent(e) {
-    if (e.key === 'Enter' || e.key === ',') {
-        e.preventDefault(); // Stop form full submit
-        const rawValue = e.target.value.trim().toLowerCase();
-        
-        if (rawValue !== "" && !userSkillsMap[rawValue]) {
-            // Add to our internal pseudo-map
-            userSkillsMap[rawValue] = true;
-            renderSkillTags();
+    const dropdown = document.getElementById('skillsAutocomplete');
+
+    // Arrow key navigation in dropdown
+    if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (acFilteredItems.length > 0) {
+            acHighlightIndex = Math.min(acHighlightIndex + 1, acFilteredItems.length - 1);
+            updateHighlight();
         }
-        e.target.value = ''; // clear input
+        return;
     }
+    if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (acFilteredItems.length > 0) {
+            acHighlightIndex = Math.max(acHighlightIndex - 1, 0);
+            updateHighlight();
+        }
+        return;
+    }
+
+    // Enter or comma to add skill
+    if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+
+        // If a dropdown item is highlighted, use that
+        if (acHighlightIndex >= 0 && acFilteredItems[acHighlightIndex]) {
+            const selected = acFilteredItems[acHighlightIndex];
+            addSkill(selected.name.toLowerCase());
+        } else {
+            // Else use whatever is typed
+            const rawValue = e.target.value.trim().toLowerCase();
+            if (rawValue !== "") {
+                addSkill(rawValue);
+            }
+        }
+        e.target.value = '';
+        hideAutocomplete();
+        return;
+    }
+
+    // Escape to close dropdown
+    if (e.key === 'Escape') {
+        hideAutocomplete();
+        return;
+    }
+}
+
+function addSkill(skillName) {
+    if (!userSkillsMap[skillName]) {
+        userSkillsMap[skillName] = true;
+        renderSkillTags();
+    }
+}
+
+/**
+ * Initialize autocomplete on the skill input
+ */
+function initSkillAutocomplete() {
+    const input = document.getElementById('skillInput');
+    if (!input) return;
+
+    // Create dropdown container
+    const dropdown = document.createElement('div');
+    dropdown.className = 'skills-autocomplete';
+    dropdown.id = 'skillsAutocomplete';
+    document.getElementById('skillTagsContainer').appendChild(dropdown);
+
+    // Listen for typing
+    input.addEventListener('input', (e) => {
+        const val = e.target.value.trim().toLowerCase();
+        if (val.length === 0) {
+            hideAutocomplete();
+            return;
+        }
+        filterAndShowSuggestions(val);
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.skills-input-wrapper')) {
+            hideAutocomplete();
+        }
+    });
+
+    // Show suggestions on focus if there's text
+    input.addEventListener('focus', () => {
+        const val = input.value.trim().toLowerCase();
+        if (val.length > 0) {
+            filterAndShowSuggestions(val);
+        }
+    });
+}
+
+function filterAndShowSuggestions(query) {
+    const dropdown = document.getElementById('skillsAutocomplete');
+    if (!dropdown) return;
+
+    // Filter skills matching the query
+    acFilteredItems = ALL_SKILLS.filter(s =>
+        s.name.toLowerCase().includes(query)
+    ).slice(0, 25); // Cap at 25 results
+
+    acHighlightIndex = -1;
+
+    if (acFilteredItems.length === 0) {
+        dropdown.innerHTML = `<div class="skills-ac-item" style="color: #94a3b8; pointer-events:none; justify-content:center; font-style:italic;">
+            Press Enter to add "${query}" as a custom skill
+        </div>`;
+        dropdown.classList.add('visible');
+        return;
+    }
+
+    // Group by category
+    let html = '';
+    let lastCategory = '';
+
+    acFilteredItems.forEach((item, i) => {
+        if (item.category !== lastCategory) {
+            html += `<div class="skills-ac-category">${item.category}</div>`;
+            lastCategory = item.category;
+        }
+
+        const isAdded = userSkillsMap[item.name.toLowerCase()] === true;
+        const color = CATEGORY_COLORS[item.category] || '#64748b';
+
+        // Highlight matching portion
+        const lowerName = item.name.toLowerCase();
+        const matchIdx = lowerName.indexOf(query);
+        let displayName;
+        if (matchIdx >= 0) {
+            const before = item.name.substring(0, matchIdx);
+            const match = item.name.substring(matchIdx, matchIdx + query.length);
+            const after = item.name.substring(matchIdx + query.length);
+            displayName = `<span class="ac-rest">${before}</span><span class="ac-match">${match}</span><span class="ac-rest">${after}</span>`;
+        } else {
+            displayName = `<span class="ac-rest">${item.name}</span>`;
+        }
+
+        html += `<div class="skills-ac-item${isAdded ? ' ac-added' : ''}" data-index="${i}">
+            <span class="ac-icon" style="background:${color}">${item.name.charAt(0).toUpperCase()}</span>
+            <span>${displayName}</span>
+        </div>`;
+    });
+
+    dropdown.innerHTML = html;
+    dropdown.classList.add('visible');
+
+    // Click handler on items
+    dropdown.querySelectorAll('.skills-ac-item:not(.ac-added)').forEach(el => {
+        el.addEventListener('click', () => {
+            const idx = parseInt(el.getAttribute('data-index'));
+            if (acFilteredItems[idx]) {
+                addSkill(acFilteredItems[idx].name.toLowerCase());
+                document.getElementById('skillInput').value = '';
+                hideAutocomplete();
+                document.getElementById('skillInput').focus();
+            }
+        });
+    });
+}
+
+function updateHighlight() {
+    const dropdown = document.getElementById('skillsAutocomplete');
+    if (!dropdown) return;
+    const items = dropdown.querySelectorAll('.skills-ac-item:not(.ac-added)');
+    let realIndex = 0;
+    dropdown.querySelectorAll('.skills-ac-item').forEach(el => {
+        el.classList.remove('highlighted');
+        if (!el.classList.contains('ac-added')) {
+            if (realIndex === acHighlightIndex) {
+                el.classList.add('highlighted');
+                el.scrollIntoView({ block: 'nearest' });
+            }
+            realIndex++;
+        }
+    });
+}
+
+function hideAutocomplete() {
+    const dropdown = document.getElementById('skillsAutocomplete');
+    if (dropdown) {
+        dropdown.classList.remove('visible');
+    }
+    acHighlightIndex = -1;
+    acFilteredItems = [];
 }
 
 /**
@@ -293,7 +620,7 @@ function handleSkillTagEvent(e) {
 function renderSkillTags() {
     const container = document.getElementById('skillTagsContainer');
     
-    // Clear old tags (but keep the input box)
+    // Clear old tags (but keep the input box and autocomplete dropdown)
     document.querySelectorAll('.skill-tag').forEach(el => el.remove());
 
     const inputNode = document.getElementById('skillInput');
@@ -316,3 +643,4 @@ function renderSkillTags() {
         }
     });
 }
+
