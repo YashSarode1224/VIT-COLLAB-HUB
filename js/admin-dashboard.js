@@ -271,29 +271,33 @@ submitCompletionBtn.addEventListener('click', async () => {
             individualRatingsMap[uid] = parseInt(select.value, 10);
         });
 
+        console.log("Step 1: Updating project status...");
         await updateDoc(doc(db, "projects", completingProjectId), {
             status: "completed",
             project_rating: projRating,
-            individual_ratings: individualRatingsMap, // Store map of uid -> rating
-            rating: projRating // backward compatibility
+            individual_ratings: individualRatingsMap,
+            rating: projRating
         });
+        console.log("Step 1 SUCCESS: Project marked completed.");
 
         // Apply individual rating to each team member's profile
         for (const uid of currentTeamMembers) {
-            const indivRating = individualRatingsMap[uid] || projRating; // default to project rating as fallback
+            const indivRating = individualRatingsMap[uid] || projRating;
+            console.log(`Step 2: Updating user ${uid} with rating ${indivRating}...`);
             await updateDoc(doc(db, "users", uid), {
                 total_stars: increment(indivRating),
                 project_stars: increment(projRating),
                 total_reviews: increment(1),
                 completed_projects: increment(1)
             });
+            console.log(`Step 2 SUCCESS: User ${uid} updated.`);
         }
         
         ratingModal.classList.remove('active');
         alert("Project completed successfully! Ratings have been appropriately applied to all students.");
     } catch (e) {
-        console.error("Failed to complete project", e);
-        alert("Failed to complete project. Ensure you have network connectivity.");
+        console.error("Failed to complete project:", e.code, e.message);
+        alert(`Failed to complete project.\nError: ${e.code || 'unknown'}\nDetails: ${e.message}`);
     } finally {
         submitCompletionBtn.textContent = "Finalize Project";
         submitCompletionBtn.disabled = false;

@@ -8,7 +8,7 @@ import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import {
     doc, getDoc, collection, query, where, onSnapshot, updateDoc, deleteDoc,
-    getDocs, addDoc, serverTimestamp, orderBy, arrayRemove, arrayUnion
+    getDocs, addDoc, serverTimestamp, orderBy, arrayRemove, arrayUnion, increment
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 // ─── URL Params & DOM ───
@@ -585,6 +585,27 @@ document.getElementById('delete-project-btn').addEventListener('click', async ()
     btn.disabled = true;
 
     try {
+        // If project was completed, reverse the ratings from team members
+        if (currentProjectData && currentProjectData.status === 'completed') {
+            const teamMembers = currentProjectData.team_members || [];
+            const projRating = currentProjectData.project_rating || currentProjectData.rating || 0;
+            const individualRatings = currentProjectData.individual_ratings || {};
+
+            for (const uid of teamMembers) {
+                const indivRating = individualRatings[uid] || projRating;
+                try {
+                    await updateDoc(doc(db, "users", uid), {
+                        total_stars: increment(-indivRating),
+                        project_stars: increment(-projRating),
+                        total_reviews: increment(-1),
+                        completed_projects: increment(-1)
+                    });
+                } catch (e) {
+                    console.warn(`Could not reverse ratings for user ${uid}:`, e);
+                }
+            }
+        }
+
         // Delete subcollections
         const subcollections = ['tasks', 'submissions', 'messages'];
         for (const sub of subcollections) {
