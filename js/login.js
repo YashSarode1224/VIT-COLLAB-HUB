@@ -1,28 +1,10 @@
-// Import Firebase modules via CDN
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { auth, db } from './firebase-config.js';
 import {
-    getAuth,
     signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
     onAuthStateChanged,
     sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
-// Your live web app's Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyCmNlAdzSv6dzjejUsD6DB_SitkBd2PbC8",
-    authDomain: "vit-collab-hub-e5e1e.firebaseapp.com",
-    projectId: "vit-collab-hub-e5e1e",
-    storageBucket: "vit-collab-hub-e5e1e.firebasestorage.app",
-    messagingSenderId: "685274150301",
-    appId: "1:685274150301:web:86fb9104a6e1b0e722eb74"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 // Auth Guard: If user is already logged in, redirect to their dashboard
 onAuthStateChanged(auth, async (user) => {
